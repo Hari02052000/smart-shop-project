@@ -1,0 +1,103 @@
+<%- include('../admin/layout/admin-header-layout.ejs') -%>
+
+<div class="col-lg">
+    <div class="card">
+      <div class="card-body ">
+        <div style="display: flex; justify-content: space-between;">
+          <h5 class="card-title"></h5>
+          <div>
+            <form action="/admin/addCoupons" method="get">
+              <button class="btn btn-success me-md-2" type="submit">Add Coupons</button>
+            </form>
+          </div>
+        </div>
+        <br>
+       
+        <% if (coupons.length == 0) { %>
+       
+          <div class="col-12 text-center">
+            <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+          </div>
+          <% } else { %> 
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                
+                <th scope="col">id</th>
+                <th scope="col">status</th>
+                <th scope="col">user allowed</th>
+                <th scope="col">claimed users</th>
+                <th scope="col">expiry date</th>
+                <th scope="col">discount(in%)</th>
+                <th scope="col">minimum purchase</th>
+                <th scope="col">maximum discount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% coupons.forEach(function(coupon){ %>
+              <tr>
+                  
+                <td>
+                  <%= coupon.couponId %> 
+                </td>
+                <td>
+                 <%= coupon.status %> 
+                </td>
+                <td>
+                <%=coupon.userAllowed %> 
+                </td>
+                <td>
+                  <%= coupon.claimedUsers %>
+                </td>
+                <td>
+                  <%= coupon.expiryDate.toLocaleDateString(); %>
+                </td>
+                <td>
+                  <%= coupon.discount %>
+                  
+                </td>
+                <td>
+                  <%= coupon.minimumPurchase %>
+                </td>
+                <td>
+                  <%= coupon.maxAmount %>
+                </td>
+                
+                
+                
+                <td><a class="btn btn-primary" href="/admin/editcoupon/<%=coupon._id %>" role="button"
+                    style="width: 100px;"><i class="bi bi-pen-fill"></i></a> <br>
+
+                    <!-- Blocked or not Blocked -->
+                  
+                      <br>
+                      <% if (coupon.status) { %>
+                        <form action="/admin/deactive?id=<%=coupon._id%>" method="post">
+                          <button type="submit" class="btn btn-danger" style="width: 100px;" onclick="return confirm('are you want to deactive<%=coupon.couponId%>')">Deactive</button>
+                        </form>
+          
+                        
+                      <% } else { %>
+                        <form action="/admin/active?id=<%=coupon._id%>" method="post">
+                          <button type="submit" class="btn btn-success" style="width: 100px;" onclick="return confirm('are you want to active<%=coupon.couponId%>')" >
+                           active</button>
+                    <%}%>
+                    
+                      
+                </td>
+              </tr>
+              <% }) %>
+                
+              
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+
+        
+      </div>
+    </div>
+  </div>
+
+  <%- include('../admin/layout/admin-footer-layout.ejs') -%>

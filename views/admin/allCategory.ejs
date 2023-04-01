@@ -1,0 +1,73 @@
+<%- include('../admin/layout/admin-header-layout.ejs') -%>
+
+  <div class="col-lg">
+    <div class="card">
+      <div class="card-body ">
+        <div style="display: flex; justify-content: space-between;">
+          <h5 class="card-title"></h5>
+          <div>
+            <form action="/admin/addCategory" method="get">
+              <button class="btn btn-success me-md-2" type="submit">Add category</button>
+            </form>
+          </div>
+        </div>
+        <br>
+       
+
+        <% if (category.length == 0) { %>
+          <div class="col-12 text-center">
+            <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+          </div>
+          <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                
+                <th scope="col">Name</th>
+                <th scope="col">Image</th>
+                <th scope="col">Edit</th>
+                <!-- <th scope="col">Delete</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <%category.forEach(function(i){ %>
+                <tr>
+                  <td>
+                     <%= i.category %>
+                  </td>
+                  <td><img src='<%= i.image %>' alt="" style="height: 50px; width: 60px;"></td>
+                  <td>
+                    <form action="/admin/editCategory/<%=i._id%>" method="post" >
+                      <button type="submit" class="btn btn-primary" style="width: 100px;" ><i class="bi bi-pen-fill"></i></button>
+                    </form>
+
+                  </td>
+
+                    <!-- <td>
+                      <% if (i.listed ) { %>
+                      <form action="/admin/unlistCategory/<%=i._id%> " method="post" onclick="return confirm('are you want to unlist <%=i.category%>')">
+                        <button type="submit" class="btn  btn-danger" style="width: 100px;" >unlist</button>
+                      </form>
+                      <% } else { %>
+                        <form action="/admin/listCategory/<%=i._id%> " method="post" onclick="return confirm('are you want to list <%=i.category%>')">
+                          <button type="submit" class="btn  btn-success" style="width: 100px;" >list</button>
+                        </form>
+                        <% } %>
+                    </td> -->
+              
+                </tr>
+                <% }) %>
+              
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+        
+      </div>
+    </div>
+  </div>
+
+  <%- include('../admin/layout/admin-footer-layout.ejs') -%>
+
+  

@@ -1,0 +1,27 @@
+<%-include('../admin/layout/admin-header-layout.ejs') -%>
+
+<div class="col-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Add Banner</div>
+        <hr>
+        <form action="/admin/editBanner?id=<%=banner._id%>" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="input-4">image</label>
+            <img src="/images/banner/<%=banner.image%>" style=" width: 100px; margin-bottom: 2vh;">
+
+            <input class="form-control" id="input-4" type="file"   name="image" accept="image/*">
+          </div>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="input-4">description</label>
+              <input class="form-control" id="input-4" type="text" name="description" value="<%=banner.description%>" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success px-5" id="addCategory"> update Banner</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>

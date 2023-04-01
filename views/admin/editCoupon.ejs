@@ -1,0 +1,68 @@
+<%-include('../admin/layout/admin-header-layout.ejs') -%>
+
+<div class="col-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Add Coupon</div>
+        <hr>
+        <form action="/admin/UpdateCoupon?id=<%=coupon._id%>" method="post" id="updateForm" onsubmit="editCoupon(event,'<%=coupon._id%>')">
+          <div class="form-group">
+            <div class="form-group">
+              <label for="input-4">coupon Id</label>
+              <input class="form-control" id="input-4" type="text" name="couponId" value="<%=coupon.couponId%>" required>
+            </div>
+            <div id="couponerr" style="color: red;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-4">expiry Date</label>
+            <input class="form-control" id="input-4" type="date" value="<%=coupon.expiryDate.toISOString().slice(0, 10);%>"  required name="expiryDate">
+          </div>
+          <div class="form-group">
+            <label for="input-4">allowed Users</label>
+            <input class="form-control" id="input-4" type="text"  value="<%=coupon.userAllowed%>" required name="userAllowed">
+          </div>
+          <div class="form-group">
+            <label for="input-4">discount(in %)</label>
+            <input class="form-control" id="input-4" type="text" value="<%=coupon.discount%>"  required name="discount">
+          </div>
+          <div class="form-group">
+            <label for="input-4">minimumPurchase</label>
+            <input class="form-control" id="input-4" type="text" value="<%=coupon.minimumPurchase%>"  required name="minimumPurchase">
+          </div>
+          <div class="form-group">
+            <label for="input-4">maximum discount</label>
+            <input class="form-control" id="input-4" type="text" value="<%=coupon.maxAmount%>"  required name="maxAmount">
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success px-5">Submit</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<script>
+  async function editCoupon(event,id){
+     event.preventDefault();
+     document.getElementById('couponerr').innerHTML=""
+     let updateForm=document.getElementById('updateForm');
+     let formdata= new FormData(updateForm)
+     let couponId =formdata.get('couponId')
+     let userAllowed=formdata.get('userAllowed')
+     let discount=formdata.get('discount') 
+     let minimumPurchase=formdata.get('minimumPurchase') 
+     let maxAmount=formdata.get('maxAmount')
+     let expiryDate=formdata.get('expiryDate')
+     const res=await fetch(`/admin/UpdateCoupon?couponId=${couponId}&userAllowed=${userAllowed}&discount=${discount}&minimumPurchase=${minimumPurchase}&maxAmount=${maxAmount}&expiryDate=${expiryDate}&id=${id}`,{method:'POST'})
+     let data=await res.json()
+     if(data.updated){
+      window.location.href='/admin/coupons'
+     }
+     else{
+      document.getElementById('couponerr').innerHTML="id allredy exist"
+     }
+
+
+  }
+</script>
+<%-include('../admin/layout/admin-footer-layout') -%>

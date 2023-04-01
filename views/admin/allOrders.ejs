@@ -1,0 +1,101 @@
+
+<%- include('../admin/layout/admin-header-layout.ejs') -%>
+<div class="col-lg">
+    <div class="card">
+      <div class="card-body ">
+        <div style="display: flex; justify-content: space-between;">
+          <h5 class="card-title"></h5>
+          
+        </div>
+        <br>
+       
+        <% if (allOrders.length == 0) { %>
+       
+          <div class="col-12 text-center">
+            <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+          </div>
+          <% } else { %> 
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                
+                <th scope="col">order id</th>
+                <th scope="col">totelAmount</th>
+                <th scope="col">payment status</th>
+                <th scope="col">order status</th>
+                <th scope="col">orderd date</th>
+                <th scope="col">option1</th>
+                <th scope="col">option2</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% allOrders.forEach(function(x){ %>
+                
+                <tr>
+
+                   
+                <td>
+                    <%=x._id%>
+                </td>
+                <td>
+                    <%=x.totelAmount%>
+                </td>
+                
+                <td>
+                    <%=x.paymentStatus%>
+                </td>
+                <td>
+                    <%=x.orderStatus%>
+                </td>
+                <td>
+                    <%=x.date.toLocaleDateString();%>
+                </td>
+               
+                <td>
+                   <a href="/admin/manageOrder?id=<%=x._id%>"> <button class="btn btn-primary">manage order</button></a>
+                </td>
+                <td>
+                  <form action="/admin/cancelOrder?id=<%=x._id%>" method="post" > 
+                    <button type="submit" onclick="sure(event);" class="btn btn-danger">cancel order</button>
+                  </form>
+                </td>
+            </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>
+       <% } %>
+      </div>
+    </div>
+</div>
+                
+      
+<script>
+  async function sure(event){
+    console.log(event)
+         event.preventDefault();
+         console.log(event)
+        const result=await Swal.fire({
+         title: 'Are you sure?',
+           text: `You want to cancel the order`,
+           icon: 'warning',
+           showCancelButton: true,
+           confirmButtonColor: '#3085d6',
+           cancelButtonColor: '#d33',
+           cancelButtonText:'NO',
+           confirmButtonText: 'Yes'})
+              
+           if(result.isConfirmed){
+             
+          event.target.form.submit()        
+             
+           }
+           
+
+  }
+</script>
+             
+            
+ 
+  <%- include('../admin/layout/admin-footer-layout.ejs') -%>

@@ -1,0 +1,403 @@
+<%-include('../user/layout/user-header-layout.ejs') -%>
+<section class="breadcrumb_part">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb_iner">
+                    <h2>checkout</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="checkout_area section_padding">
+    <div class="container">
+      
+      <div class="cupon_area">
+        <div class="check_title">
+                      <h2>
+            Have a coupon?
+            
+          </h2>
+        </div>
+        <div id="couponErr" style="color: red;"></div>
+        <form  method="post" id="orderform" onsubmit="placeOrder(event)" >
+        <input type="text" placeholder="Enter coupon code" id="coupon" name="coupon" class="couponInput" />
+        <div id="couponValidate" style="color: green;"></div>
+        <a class="tp_btn" onclick="validator(event)">Apply Coupon</a>
+      </div>
+      
+      
+                                  
+         
+          
+         
+      </div>
+      </div>
+    
+      <div class="billing_details">
+        <div class="row">
+          <div class="col-lg-8">
+    
+            <div class="order_box">
+              <h2>Your Order</h2>
+              <ul class="list">
+                <li>
+                  <a href="#">Product
+                    <span>Total</span>
+                  </a>
+                </li>
+                <% usercart.cart.forEach(function(x) { %>
+                <li>
+                  <a><%= x.product.productName %>
+                    <span class="middle">x<%=x.quantity %></span>
+                    <span class="last"><%= x.product.newprice %></span>
+                  </a>
+                </li>
+                <% }) %>
+                
+              </ul>
+              <ul class="list list_2">
+                <li>
+                  <a>Subtotal
+                    <span id="totelprice"><%=usercart.totel%></span>
+                  </a>
+                </li>
+                
+              </ul>
+              <div class="payment_item">
+                
+                  <input type="radio"  value="cod" name="paymentOption" required /> <label>cod</label>
+                  
+                  
+                
+               
+              </div>
+              <div class="payment_item active">
+              
+                  <input type="radio" id="f-option6" value="online" name="paymentOption" required /> <label>online</label>
+                  
+                  
+              
+                
+              </div>
+              <div class="payment_item active">
+              
+                <input type="checkbox" value="useWallet" name="wallet"> <label>use wallet</label>
+                
+                
+            
+              
+            </div>
+              
+              <button class="btn_3" type="submit">Proceed to Pay</button>
+            </div>
+            
+            
+          </div>
+          <div class="col-lg-4">
+            <h3>select your adress</h3>
+            <% if (user.adress.length != 0) { %>       
+  
+                <hr>
+                <% user.adress.forEach((x,i)=> { %>
+            <input type="radio" name="adress" value="<%= x._id %>" required><label>Address<%=i+1%></label><br><label>name:<%= x.name %></label><br><label>house:<%= x.house %></label><br><label>city:<%= x.city %></label><br><label>zip:<%= x.zip %></label><br>
+             <a href="#" onclick="updateAdress(event,'<%=x._id%>')">edit</a>  <a href="/removeAdress?q=<%=x._id%>" style="margin-left: 10px;" onclick="return confirm('are you want to delete the adress')">remove</a><br>
+               
+              <% } )%>
+                   
+            
+            <% } %>
+
+        </form>
+        <div  style="display: none;" id="updateformDiv">
+
+          <form action="/updateAdress" method="post" id="updateform">
+            <div class="form-group">
+              <label>name</label>
+              <input type="text" class="form-control" name="name" required   placeholder="Enter name">
+              
+            </div>
+      
+            <div class="form-group">
+              <label>house</label>
+              <input type="text" class="form-control" name="house" required   placeholder="Enter name">
+              
+            </div>
+            <div class="form-group">
+              <label>city</label>
+              <input type="text" class="form-control" name="city" required   placeholder="Enter name">
+              
+            </div>
+            <div class="form-group">
+              <label>pincode</label>
+              <input type="text" class="form-control" name="zip" required   placeholder="Enter name">
+              
+            </div>
+            <button type="submit" class="btn btn-primary">save</button>
+            <button onclick="cancelAdress(event)" class="btn btn-danger">cancel</button>
+          </form>
+                            
+          <!-- <form action="/updateAdress" method="post" id="updateform" >
+           <label>name</label><br>
+          <input type="text" name="name" required ><br>
+          <label>bulding/housename</label><br>
+          <input type="text" name="house" required ><br>
+          <label>city</label><br>
+          <input type="text" name="city" required><br>
+          <label>zip</label><br>
+          <input type="text" name="zip" required><br>
+           <button type="submit">save</button>
+           <button type="button" onclick="cancelAdress()">cancel</button>
+          </form> -->
+        </div>
+        <button type="button" onclick="addAdress()" class="button">add new adress</button><br>
+            <div>
+            <div class="form-group" style="display: none;" id="addform">
+              <form action="/addAdress" method="post">
+                <div class="form-group">
+                  <label>name</label>
+                  <input type="text" class="form-control" name="name" required   placeholder="Enter name">
+                  
+                </div>
+          
+                <div class="form-group">
+                  <label>house</label>
+                  <input type="text" class="form-control" name="house" required   placeholder="Enter house">
+                  
+                </div>
+                <div class="form-group">
+                  <label>city</label>
+                  <input type="text" class="form-control" name="city" required   placeholder="Enter city">
+                  
+                </div>
+                <div class="form-group">
+                  <label>pincode</label>
+                  <input type="text" class="form-control" name="zip" required   placeholder="Enter pincode">
+                  
+                </div>
+                <button type="submit" class="btn btn-primary">save</button>
+                <button onclick="cancel(event)" class="btn btn-danger">cancel</button>
+              </form>
+            <!-- <form action="/addAdress" method="post" >
+                <label>name</label><br>
+               <input type="text" name="name" required ><br>
+               <label>bulding/housename</label><br>
+               <input type="text" name="house" required ><br>
+               <label>city</label><br>
+               <input type="text" name="city" required><br>
+               <label>zip</label><br>
+               <input type="text" name="zip" required><br>
+                <button type="submit">save</button>
+                <button type="button" onclick="cancel()">cancel</button>
+               </form> -->
+            </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  //adress
+    function  addAdress(){
+       const form = document.getElementById('addform');
+       form.style.display='block';
+        }
+        function cancel(){
+          event.preventDefault()
+
+          const form = document.getElementById('addform');
+         form.style.display='none';
+        }
+//coupon validate
+        async function  validator(event){
+          event.preventDefault()
+        const couponId=document.getElementById('coupon').value
+        console.log(couponId)
+     let res=  await fetch(`/couponValidate?id=${couponId}`,{method:'post'})
+     let data=await res.json()
+     console.log(data)
+     if(data.err){
+      console.log('hi')
+      document.getElementById('couponErr').innerHTML=data.err
+     }
+     if (data.validated){
+     let totel=document.getElementById('totelprice').innerHTML
+     let old=parseFloat(totel)
+     console.log(old)
+     let discount=parseFloat(old)* parseFloat(data.discount/100)
+     let changed
+     console.log(discount)
+     if (discount<parseFloat(data.maxAmount)){
+      changed=old-discount}
+     else {
+      changed=old-(parseFloat(data.maxAmount))
+     }
+     console.log(changed)
+     document.getElementById('totelprice').innerHTML=`${totel}-${discount}=${changed}`
+     
+     document.getElementById('couponValidate').innerHTML='coupon aplied'
+     
+     }
+      }
+      //update adress
+      function cancelAdress(event){
+        event.preventDefault()
+
+          document.getElementById('updateformDiv').style.display='none'
+        }
+        async function updateAdress(event,id){
+         event.preventDefault()
+       const res= await fetch(`/updateAdress?id=${id}`)
+       const data=await res.json()
+       console.log(data)
+       let form= document.getElementById('updateform')
+       console.log(form)
+      form.name.value=data.name
+      form.house.value=data.house
+      form.city.value=data.city
+      form.zip.value=data.zip
+      form.action=`/updateAdress?id=${data._id}`
+      document.getElementById('updateformDiv').style.display='flex'
+      console.log(form.action)
+       
+        }
+      //payment
+      async  function placeOrder(event){
+      event.preventDefault()
+      let orderform=document.querySelector('#orderform')
+     let details= new FormData(orderform)
+     let adress=details.get("adress")
+     let paymentOption=details.get("paymentOption") 
+     let wallet=details.get("wallet");
+     let couponid=document.getElementById('coupon').value
+     if((adress!=null)&&(paymentOption!=null)){
+     const response= await fetch(`/placeOrder?adress=${adress}&paymentOption=${paymentOption}&couponid=${couponid},&wallet=${wallet}`,{method:'POST'})
+     const data=await response.json()
+     if(data.methode=='cod'){
+    
+      console.log('hi')
+      try{
+        const clicked=await Swal.fire({
+          icon: 'success',
+          title: 'order placed',
+          text: `click here for`,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: `go shop`,
+          cancelButtonText:`see orders`})
+          console.log(clicked)
+          if(clicked.isConfirmed){
+             window.location.href='/allproductpage'
+          }
+          if(clicked.isDismissed){
+            window.location.href='/orders'
+          }
+
+        // window.location.href='/orderConformation'
+      }
+      catch(err){
+        console.log(err)
+      }
+      
+     }
+      if(data.methode=='online'){
+        const order=data.order
+        console.log(data)
+        console.log(order);
+        makeOrder(order)
+      }}
+      else{
+        alert('adress not added')
+     }
+     }
+     //razorpay 
+     function makeOrder(order){
+       let amount=order.amount
+       amount=parseFloat(amount)
+       console.log(amount)
+       amount=amount
+        var options = {
+    "key": "rzp_test_8emA6zzli6nGP1", // Enter the Key ID generated from the Dashboard
+    "amount": amount*1000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Smart Shop",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+            
+        verifyPayment(response,order);
+    },
+    
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+
+  rzp1.open();
+
+
+        
+      }
+
+     async function verifyPayment(response,order){
+      console.log(response)
+    const result=await fetch('/verifyOnline',{
+      method:'POST',
+      body:JSON.stringify({response,order}),
+      headers:{'content-Type':'application/json'}
+    })
+    const data = await result.json()
+    console.log(data)
+    if(data.paymet){
+      const clicked=await Swal.fire({
+          icon: 'success',
+          title: 'order placed',
+          text: `click here for`,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: `go shop`,
+          cancelButtonText:`see orders`})
+          console.log(clicked)
+          if(clicked.isConfirmed){
+             window.location.href='/allproductpage'
+          }
+          if(clicked.isDismissed){
+            window.location.href='/orders'
+          }
+    }
+    else{
+      const res=await Swal.fire({
+                  icon: 'error',
+                  title: 'failed',
+                  text: "payment failed"
+                })
+    }
+      }
+</script>
+
+
+//
+
+
+
+<%-include('../user/layout/user-footer-layout.ejs') -%>

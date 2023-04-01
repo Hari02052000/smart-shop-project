@@ -1,0 +1,138 @@
+<%-include('../admin/layout/admin-header-layout.ejs') -%>
+<style>
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
+
+
+
+@media (max-width:default) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+
+  <div class="col-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">edit Product</div>
+        <hr>
+        <form action="/admin/updateProduct?id=<%=products._id%>" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="input-1">prodeut Name</label>
+          <input class="form-control" id="input-4" type="text" placeholder="productName" value="<%=products.productName%>" required name="productName">
+          </div>
+
+          <div class="form-group">
+            <label for="input-2">Catogery</label>
+            <select class="group input-group form-control" name="catogery" id="">
+              <option value="<%=products.category%>" selected><%=products.category%></option>
+              <%category.forEach(function(category){ %>
+                <option value="<%=category.category%> ">
+                  <%=category.category%> 
+                </option>
+                <% }) %>
+            </select>
+            <!-- <input type="text" class="form-control" id="input-2" placeholder="Enter Your Email Address"> -->
+          </div>
+
+          <div class="form-group">
+            <label for="input-4">description</label>
+            <input class="form-control" id="input-4" type="text" placeholder="description" value="<%=products.description%>" required name="description">
+          </div>
+
+          <div class="form-group">
+            <label for="input-5">Price</label>
+            <input class="form-control" id="input-5" type="tel" placeholder="price" value="<%=products.price%>" required name="price">
+          </div>
+
+          <div class="form-group">
+            <label for="input-5">images</label>
+            <div id="imgarray" class="container">
+                <%products.images.forEach(function(x,i){ %>
+                  <div class="box">
+                  <button class="btn btn-danger" onclick="deleteImage(event,'<%=i%>','<%=products._id%>')" id="imgbuton_<%=i%>" >x</button>
+                    <img id="image_<%=i%>" src="<%=x.URL%>" style="height:200px; width: 300px; margin-right:10px; margin-bottom: 10px; object-fit: contain;" >
+                  </div>
+                    <% }) %>
+                  
+            </div>
+            <input class="form-control"  type="file" multiple placeholder="images"  name="images" accept="image/*">
+          </div>
+          
+          <div class="form-group">
+            <label for="input-5">Number of stocks</label>
+            <input class="form-control" id="input-5" type="tel" placeholder="Number of stocks"value="<%=products.stocks%>" required name="stocks">
+          </div>
+          <div class="form-group">
+            <label>Brand</label>
+              <input class="form-control" id="input-5" type="text" placeholder="brand" value="<%=products.brand%>" required name="brand">
+            
+          </div>
+          <div class="form-group">
+            <label>Model</label>
+            <input class="form-control" id="input-5" type="text" placeholder="model" value="<%=products.model%>" required name="model">
+            
+          </div>
+          
+          <div class="form-group">
+            <label>highlights</label>
+            <textarea class="form-control"  name="highlights"  rows="6" for="input-5">
+            </textarea>
+          </div>
+          
+          
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-success px-5"> Update Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+   async function deleteImage(event,image,productId){
+      event.preventDefault();
+      console.log(image,productId)
+      const result=await Swal.fire({
+        title: 'Are you sure?',
+          text: `You want to remove the image`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, remove it!'})
+          if(result.isConfirmed){
+          const res= await fetch(`/admin/deleateImage?productId=${productId}&image=${image}"`)
+          const data= await res.json()
+          if(data.imageRemoved) {
+            document.getElementById(`image_${image}`).style.display='none'
+            document.getElementById(`imgbuton_${image}`).style.display='none'
+          }
+          }
+
+     
+    }
+//   function viewimage(event){
+// console.log(event)
+// let length=event.target.files.length
+// let imgdiv=document.getElementById('imgarry')
+
+//  for(let i=0;i<length;i++){
+//     console.log(i)
+//     let j=document.createElement('img')
+//     j.src=event.target.files[i]
+//     imgdiv.appendChild(j)
+// };
+// console.log('ok');
+//   }
+  </script>
+
+
+  <%-include('../admin/layout/admin-footer-layout') -%>

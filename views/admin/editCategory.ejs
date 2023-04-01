@@ -1,0 +1,52 @@
+<%-include('../admin/layout/admin-header-layout.ejs') -%>
+
+<div class="col-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">edit Category</div>
+        <hr>
+        <form action="/admin/updateCategory?q=<%=category._id%>" method="post" enctype="multipart/form-data" id="editForm" onsubmit="edit(event,'<%=category._id%>')">
+          <div class="form-group">
+            <div class="form-group">
+              <label for="input-4">Category name</label>
+              <input class="form-control" id="input-4" type="text" name="category" value="<%=category.category%>" required>
+            </div>
+            <div id="err" style="color: red;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-4">image</label>
+            <div>
+                <img src="<%=category.image%> " style="height: 100px; width: 80px;">
+            </div>
+            <input class="form-control" id="" type="file"   name="image" accept="image/*">
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success px-5"> Submit</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  let form=document.getElementById('editForm');
+  async function edit(e,id){
+    e.preventDefault()
+    document.getElementById('err').innerHTML=""
+    const formdata=new FormData(form);
+    let res=await fetch(`/admin/updateCategory?q=${id}`, {
+         method: 'POST',
+         body: formdata
+           })
+           console.log(res)
+      res=await res.json()
+      console.log(res)
+      if(res.err){
+        document.getElementById('err').innerHTML=res.err
+      }
+      if(res.changed){
+        window.location.href='/admin/allcategory'
+      }
+  }
+</script>

@@ -1,0 +1,115 @@
+<%- include('../user/layout/user-header-layout.ejs') -%>
+
+<section class="vh-100" style="background-color:#B08EAD;">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-xl-9">
+           <div id="err" ></div>
+          <h1 class="text-white mb-4">edit details</h1>
+          <form action="" id="editForm" onsubmit="editprofile(event,'<%=user._id%>')">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body">
+  
+              <div class="row align-items-center pt-4 pb-3">
+                <div class="col-md-3 ps-5">
+  
+                  <h6 class="mb-0">user name</h6>
+  
+                </div>
+                <div class="col-md-9 pe-5">
+  
+                  <input type="text" class="form-control form-control-lg" name="username" value="<%=user.username%>" required />
+  
+                </div>
+              </div>
+  
+              <hr class="mx-n3">
+  
+              <div class="row align-items-center py-3">
+                <div class="col-md-3 ps-5">
+  
+                  <h6 class="mb-0">Email</h6>
+  
+                </div>
+                <div class="col-md-9 pe-5">
+  
+                  <input type="email" class="form-control form-control-lg" name="email" value="<%=user.email%>" required />
+  
+                </div>
+              </div>
+  
+              <hr class="mx-n3">
+  
+              <div class="row align-items-center py-3">
+                <div class="col-md-3 ps-5">
+  
+                  <h6 class="mb-0">phone</h6>
+                
+                </div>
+                <div class="col-md-9 pe-5">
+  
+                    <input  class="form-control form-control-lg" name="phone" value="<%=user.phone%>" />
+    
+                  </div>
+              </div>
+  
+              <hr class="mx-n3">
+  
+                
+              <hr class="mx-n3">
+  
+              <div class="px-5 py-4">
+                <button type="submit" class="btn btn-primary btn-lg">edit</button>
+              </div>
+            </form>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  </section>
+    
+    <script>
+        let form=document.getElementById('editForm')
+        async function editprofile(event,id){
+          event.preventDefault()
+          document.getElementById('err').innerHTML=""
+          form=new FormData(form)
+          let email=form.get("email")
+          let phone=form.get("phone")
+          let username=form.get("username")
+          let res=await fetch(`/editDetails?email=${email}&phone=${phone}&username=${username}&id=${id}`,{
+            method:'POST' })
+            let data=await res.json()
+            console.log(data)
+            if(data.updated){
+              const click=await Swal.fire({
+                     icon: 'success',
+                     title: 'details updated',
+                     
+                   })
+             console.log(click)
+             if(click.isConfirmed){
+               window.location.href=`back`
+             }
+
+            }
+            if(data.err){
+                if(data.err.email){
+                  document.getElementById('err').innerHTML='<h3 style="color: red;">email is alredy exsiting</h3>'
+                }
+                if(data.err.phone){
+                  document.getElementById('err').innerHTML='<h3 style="color: red;">the phone number is allredy exsitng</h3>'
+                }
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+    <%- include('../user/layout/user-footer-layout.ejs') -%>

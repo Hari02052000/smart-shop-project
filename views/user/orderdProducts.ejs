@@ -1,0 +1,38 @@
+<%-include('../user/layout/user-header-layout.ejs') -%>
+
+<% if (orderdProducts.length == 0) { %>
+  <div class>
+    <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+  </div>
+  <% } else { %>
+
+<section class="cart_area section_padding">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+               <th scope="col">orderd product</th>
+                <th scope="col">image</th>
+                <th scope="col">quantity</th>
+                <th scope="col">price</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% orderdProducts.forEach(function(x) { %>
+            <tr>
+              <td><%=x.product.productName%></td>
+              <td><img src="/images/products/<%=x.product.images[0]%> " alt="Product" style="height:70px"></td>
+                        <td><%=x.quantity%></td>
+              <td><%=x.product.price%></td>
+            </tr>
+            <% }) %>  
+          </tbody>
+        </table>
+    </div>
+    <% } %>
+
+</section>
+
+<%-include('../user/layout/user-footer-layout.ejs') -%>

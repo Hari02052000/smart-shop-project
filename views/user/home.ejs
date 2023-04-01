@@ -1,0 +1,101 @@
+<%-include('../user/layout/user-header-layout.ejs') %>
+
+<link rel="stylesheet" type="text/css" href="/user/product details/css/util.css">
+<link rel="stylesheet" type="text/css" href="/user/product details/css/main.css">
+
+<!-- <section class="breadcrumb_part">
+  <div class="container">
+      <div class="row">
+          <div class="col-lg-12">
+              <div class="breadcrumb_iner">
+                  <h2>Welcome</h2>
+              </div>
+          </div>
+      </div>
+  </div>
+</section> -->
+
+
+<% if (banners.length == 0) { %>
+  <div class="col-12 text-center">
+    <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+  </div>
+  <% } else { %>
+
+<section class="single_product_list">
+  <div class="container">
+      <div class="row">
+        
+        
+          <div class="col-lg-12">
+            <%banners.forEach(function(i){ %>
+              <div class="single_product_iner">
+                  <div class="row align-items-center justify-content-between">
+                      <div class="col-lg-6 col-sm-6">
+                          <div class="single_product_img">
+                              <img src="/images/banner/<%=i.image%>" class="img-fluid" alt="#">
+                              <img src="/images/banner/product_overlay.png" alt="#" class="product_overlay img-fluid">
+                          </div>
+                      </div>
+                      <div class="col-lg-5 col-sm-6">
+                          <div class="single_product_content">
+                              <!-- <h5>Started from $10</h5> -->
+                              <h2> <a href="single-product.html">
+                                  <%=i.description%> 
+                                  </a> </h2>
+                              <a href="/allproductpage" class="btn_3">Explore Now</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <% }) %>
+          </div>
+      </div>
+  </div>
+</section>
+<% } %>
+<section class="trending_items">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section_tittle text-center">
+                    <h2>Our Products</h2>
+                </div>
+            </div>
+        </div>
+        <% if (products.length != 0) { %>
+        <div class="row">
+            <% products.forEach(function(product){ %>
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                    <div class="block2">
+                        <div class="block2-pic hov-img0">
+                            <img src="<%=product.images[0].URL%>" alt="IMG-PRODUCT" style="height:200px; object-fit: contain;">
+    
+                            <a href="/singleProduct/<%=product._id%> " class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+                                Quick View
+                            </a>
+                        </div>
+    
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l ">
+                                <a href="/singleProduct/<%=product._id%>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    <%=product.productName%>
+                                </a>
+    
+                                <!-- <span class="stext-105 cl3">
+                                    RS: ${product.price}
+                                </span> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <div class="section_tittle text-center">
+        <a href="/allproductpage" class="btn_3">view more</a> 
+    </div>
+    <%}%>
+</section>
+  
+<%-include('../user/layout/user-footer-layout.ejs') %> 

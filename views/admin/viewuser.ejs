@@ -1,0 +1,72 @@
+<%- include('../admin/layout/admin-header-layout.ejs') -%>
+
+<div class="col-lg">
+  <div class="card">
+    <div class="card-body">
+      <div style="display: flex; justify-content: space-between;">
+        <h5 class="card-title">Users</h5>
+        
+      </div>
+      <br>
+      <% if (users.length == 0) { %> 
+        <div class="col-12 text-center">
+          <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+        </div>
+      <% } else { %> 
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">User Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <!-- <th scope="col">Account Status</th> -->
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(function(user){ %> 
+          <tr>
+            <td><%= user.username %></td>
+            <td><%= user.email %></td>
+            <td><%= user.phone %></td>
+            <td>
+            <% if (user.isBlocked) { %>
+              <form action="/admin/unblockUser/?id=<%=user._id%>" method="post">
+                <button type="submit" class="btn btn-success" style="width: 100px;" onclick="return confirm('are you want to unblock <%=user.username%>')"> UnBlock</button>
+              </form>
+
+    
+            <% } else { %>
+              <form action="/admin/blockUser/?id=<%=user._id%>" method="post">
+                <button type="submit" class="btn btn-danger" style="width: 100px;" onclick="return confirm('are you want to block <%=user.username%>')">
+                  Block</button>
+          <%}%>
+          </td>
+        </tr>
+          <% }) %>
+    
+        </tbody>
+          </table>
+        </div>
+        
+      <% } %>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+ <%- include('../admin/layout/admin-footer-layout.ejs') -%>
+
+
+
+ 
+                   
+  
+  
+    

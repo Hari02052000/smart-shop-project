@@ -1,0 +1,53 @@
+
+<%-include('../admin/layout/admin-header-layout.ejs') -%>
+
+<div class="col-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Add Category</div>
+        <hr>
+        <form action="/admin/addCatogery" method="post" enctype="multipart/form-data" id="addCatogery" onsubmit="makeCatogery(event)">
+          <div class="form-group">
+            <div class="form-group">
+              <label for="input-4">Category name</label>
+              <input class="form-control" id="input-4" type="text" name="category" required>
+              <div id="err" style="color: red;"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="input-4">image</label>
+            <input class="form-control" id="input-4" type="file"   required name="image" accept="image/*">
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-success px-5" id="addCategory"> Add Category</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<script>
+
+ async function makeCatogery(event){
+  event.preventDefault()
+  let form=document.getElementById('addCatogery')
+  document.getElementById('err').innerHTML=""
+  const formdata=new FormData(form);
+    let res=await fetch('/admin/addCatogery', {
+         method: 'POST',
+         body: formdata
+           })
+           console.log(res)
+      res=await res.json()
+      console.log(res)
+      if(res.err){
+        document.getElementById('err').innerHTML=res.err
+      }
+      if(res.added){
+        window.location.href='/admin/allcategory'
+      }
+
+ }
+</script>
+
+<%-include('../admin/layout/admin-footer-layout') -%>

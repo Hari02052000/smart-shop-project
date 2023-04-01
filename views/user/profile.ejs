@@ -1,0 +1,180 @@
+<%-include('../user/layout/user-header-layout.ejs') %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+
+
+ 
+
+
+    <div class="container mt-3 mb-3" >
+        <div class="main-body">
+        
+                      
+              <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex flex-column align-items-center text-center">
+                        <img src="/images/userprofile/<%=user.profile%>" alt="Admin" class="rounded-circle" width="150">
+                        <div class="mt-3">
+                          <h4><%user.username%></h4>
+                          
+                          <button class="btn btn-primary" id="image-upload">edit</button>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card mt-3">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet" viewBox="0 0 16 16"> <path d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5V3zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a1.99 1.99 0 0 1-1-.268zM1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1z"/> </svg>  Wallet</h6>
+                        <span class="text-secondary"><%=user.wallet%></span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0">wishlist</h6>
+                       <a href="/wishlist"><span class="text-secondary">wishlist</span></a>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                       <h6 class="mb-0">orders</h6>
+                      <a href="/orders"> <span class="text-secondary">orders</span></a>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0">logout</h6>
+                       <a href="/logout"><span class="text-secondary">logout</span></a>
+                      </li>
+                      
+                    </ul>
+                  </div>
+    
+                </div>
+                <div class="col-md-8">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Full Name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                          <%=user.username%>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                          <%=user.email%>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Phone</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                          <%=user.phone%>
+                        </div>
+                      </div>
+                      <hr>
+                      
+                      
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <a class="btn btn-info " target="__blank" href="/editprofile/:<%=user._id%>">Edit</a>
+                          <a class="btn btn-primary "  href="/forgotPassword">change password</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                  
+    
+    
+    
+                </div>
+              </div>
+    
+            </div>
+        </div>
+
+        <script>
+            const imgBtn=document.getElementById('image-upload')
+             imgBtn.addEventListener('click',function(){
+//                 console.log('hi')
+
+//                 const input = document.createElement('input');
+//   input.type = 'file';
+//   input.accept = 'image/*';
+//   input.addEventListener('change', () => {
+//     const file = input.files[0];
+//     const reader = new FileReader();
+//     reader.onload = () => {
+//       const image = new Image();
+//       image.src = reader.result;
+//       const cropper = new Cropper(image, {
+//         aspectRatio: 1,
+//         viewMode: 1,
+//         dragMode: 'move',
+//         autoCropArea: 1,
+//         cropBoxResizable: false,
+//         cropBoxMovable: false,
+//         minCropBoxWidth: 200,
+//         minCropBoxHeight: 200,
+//         crop: (event) => {
+//           const canvas = cropper.getCroppedCanvas();
+//           const croppedImage = canvas.toDataURL('image/jpeg', 1.0);
+//           const cropData = {
+//             x: event.detail.x,
+//             y: event.detail.y,
+//             width: event.detail.width,
+//             height: event.detail.height,
+//           };
+          
+//           uploadCroppedImage(croppedImage, cropData);
+//         },
+//       });
+//     };
+//     reader.readAsDataURL(file);
+//   });
+//   input.click();
+//   function uploadCroppedImage(croppedImage, cropData) {
+//   // Send the cropped image and cropData to your server using an XMLHttpRequest or fetch()
+//   // The server should receive the image data and crop data and use it to crop and save the image
+//   console.log(croppedImage, cropData);
+// }
+
+                const input = document.createElement('input');
+             input.type = 'file';
+              input.accept = 'image/*';
+            input.addEventListener('change',async () => {
+            const file = input.files[0];
+            console.log('Selected file:', file);
+
+
+         //  send image to server
+
+
+           const formData = new FormData();
+          formData.append('image', file);
+       const res= await fetch('/profileUpload', {
+         method: 'POST',
+         body: formData
+           })
+         const data= await res.json()
+         //window.location.reload();
+         if(data.uploaded){
+          window.location.reload();
+         }
+            });
+          input.click();
+           
+
+            })
+        </script>
+
+        <%-include('../user/layout/user-footer-layout.ejs') -%>
+
+
+

@@ -1,0 +1,75 @@
+<%-include('../admin/layout/admin-header-layout.ejs') -%>
+
+  <div class="col-lg">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Add Prodect</div>
+        <hr>
+        <form action="/admin/addproduct" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="input-1">product Name</label>
+          <input class="form-control" id="input-4" type="text" placeholder="productName" required name="productName">
+            <!-- <input type="text" class="form-control" id="input-1" placeholder="Enter Your Name"> -->
+          </div>
+
+          <div class="form-group">
+            <label for="input-2">Category</label>
+            <select class="group input-group form-control" name="category" id="">
+              <option value="" selected>Select a category</option>
+              <%category.forEach(function(category){ %>
+                <option value= <%=category._id%> > 
+                  <%=category.category%> 
+                </option>
+                <% }) %>
+            </select>
+            <!-- <input type="text" class="form-control" id="input-2" placeholder="Enter Your Email Address"> -->
+          </div>
+
+          <div class="form-group">
+            <label for="input-4">description</label>
+            <input class="form-control" id="input-4" type="text" placeholder="description" required name="description">
+          </div>
+
+          <div class="form-group">
+            <label for="input-5">Price</label>
+            <input class="form-control" id="input-5" type="tel" placeholder="price" required name="price">
+          </div>
+
+          <div class="form-group">
+            <label for="input-5">images</label>
+            <input class="form-control" id="input-5" type="file" multiple placeholder="images" required name="images" accept="image/*">
+          </div>
+          
+          <div class="form-group">
+            <label for="input-5">Number of stocks</label>
+            <input class="form-control" id="input-5" type="tel" placeholder="Number of stocks" required name="stocks">
+          </div>
+          <div class="form-group">
+            <label>Brand</label>
+              <input class="form-control" id="input-5" type="text" placeholder="brand" required name="brand">
+            
+          </div>
+          <div class="form-group">
+            <label>Model</label>
+            <input class="form-control" id="input-5" type="text" placeholder="model" required name="model">
+            
+          </div>
+          
+          <div class="form-group">
+            <label>highlights</label>
+            <textarea class="form-control"  name="highlights" rows="6" for="input-5">
+            </textarea>
+          </div>
+          
+          
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-success px-5"> Add Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <%-include('../admin/layout/admin-footer-layout') -%>

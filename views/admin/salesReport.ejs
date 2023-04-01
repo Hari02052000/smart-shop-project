@@ -1,0 +1,40 @@
+<%- include('../admin/layout/admin-header-layout.ejs') -%>
+
+<form action="/admin/getSales" method="post" id="orderForm">
+ <label>from</label>
+<input type="Date" name="fromDate" class="form-control" required>
+<label>To</label>
+<input type="Date" name="toDate" class="form-control" required>
+
+
+<label class="form-check-label">
+    File Type
+  </label>
+
+<div class="form-check">
+<input class="form-check-input" type="radio" name="file" value="pdf" required>
+    <label class="form-check-label">
+      PDF
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="file" value="excel" required>
+    <label class="form-check-label">
+      Excel
+    </label>
+  </div>
+  <button type="submit" class="btn btn-info">Download</button>
+<!-- <label>file type</label><br>
+<input type="radio" name="file" value="pdf" class="form-check" required><label class="form-check-label">pdf</label>
+<input type="radio" name="file" value="excel" class="form-check"  required><label for="form-check-label">excel</label>
+<button type="submit" class="btn btn-info">download</button> -->
+</form>
+
+
+
+
+
+
+
+
+<%- include('../admin/layout/admin-footer-layout.ejs') -%>

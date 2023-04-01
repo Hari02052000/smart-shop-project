@@ -1,0 +1,275 @@
+<%-include('../user/layout/user-header-layout.ejs') -%>
+
+  
+
+<section>
+  <h2>Your Order</h2>
+
+  <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col" id="one">product name</th>
+            <th scope="col">price</th>
+            <th scope="col">quantity</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% usercart.cart.forEach(function(x) { %>
+            <tr>
+              
+              <td>
+                <%= x.product.productName %>
+              </td>
+              <td >
+               <%= x.product.price %>                   
+              </td>
+              <td><%=x.quantity %></td>
+              <td >
+                <%= x.product.price %>*<%=x.quantity %>=<%= x.product.newprice %>
+              </td>
+                </tr>
+               <% }) %>
+        </tbody>
+          </table>
+          <hr>
+          <p style="text-align: right; margin-right: 130px; color: black;" id="totelprice">Totel price=<%=usercart.totel%></p>
+
+</section>
+
+
+
+<p style="text-align: center;">select your delivery address </p>
+
+<form  onsubmit="placeOrder(event)" id="orderform" action="/orderConform" class="container">
+
+  <% if (user.adress.length != 0) { %>       
+  
+    <hr>
+    <% user.adress.forEach((x,i)=> { %>
+<input type="radio" name="adress" value="<%= x._id %>" required><label><%= x.name %>(name)<%= x.house %>(house)<%= x.city%>(city)<%= x.zip %>(zip)</label><br>
+ <a href="#" onclick="updateAdress(event,'<%=x._id%>')">edit</a>  <a href="/removeAdress?q=<%=x._id%>" style="margin-left: 10px;" onclick="return confirm('are you want to delete the adress')">remove</a><br>
+   
+  <% } )%>
+       
+
+<% } %>
+    
+    <button type="button" onclick="addAdress()" class="button">add new adress</button><br>
+ 
+
+    <input type="text" onchange="validator()" placeholder="Enter coupon code" id="coupon" name="coupon" class="couponInput"/>
+    <div id="couponValidate"></div>
+    <!-- <button type="button" class="button" onclick="validator()">Apply</button> -->
+
+<input type="radio" value="cod" name="paymentOption" required><label>cod</label>
+<input type="radio" value="online" name="paymentOption" required><label>online</label>
+
+<button type="submit" class="btn_3">place order</button>
+
+</form>
+
+
+
+<div>
+  <div class="form-group" style="display: none;" id="updateformDiv">
+                            
+    <form action="/updateAdress" method="post" id="updateform" >
+     <label>name</label><br>
+    <input type="text" name="name" required ><br>
+    <label>bulding/housename</label><br>
+    <input type="text" name="house" required ><br>
+    <label>city</label><br>
+    <input type="text" name="city" required><br>
+    <label>zip</label><br>
+    <input type="text" name="zip" required><br>
+     <button type="submit">save</button>
+     <button type="button" onclick="cancelAdress()">cancel</button>
+    </form>
+  </div>
+
+
+
+<div>
+  <div class="form-group" style="display: none;" id="addform">
+                            
+    <form action="/addAdress" method="post" >
+     <label>name</label><br>
+    <input type="text" name="name" required ><br>
+    <label>bulding/housename</label><br>
+    <input type="text" name="house" required ><br>
+    <label>city</label><br>
+    <input type="text" name="city" required><br>
+    <label>zip</label><br>
+    <input type="text" name="zip" required><br>
+     <button type="submit">save</button>
+     <button type="button" onclick="cancel()">cancel</button>
+    </form>
+    
+
+</div>
+</div>
+
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+     <script>
+        function  addAdress(){
+       const form = document.getElementById('addform');
+       form.style.display='flex';
+        }
+        function cancel(){
+          const form = document.getElementById('addform');
+         form.style.display='none';
+        }
+        function cancelAdress(){
+          document.getElementById('updateformDiv').style.display='none'
+        }
+        async function updateAdress(event,id){
+         event.preventDefault()
+       const res= await fetch(`/updateAdress?id=${id}`)
+       const data=await res.json()
+       console.log(data)
+       let form= document.getElementById('updateform')
+       console.log(form)
+      form.name.value=data.name
+      form.house.value=data.house
+      form.city.value=data.city
+      form.zip.value=data.zip
+      form.action=`/updateAdress?id=${data._id}`
+      document.getElementById('updateformDiv').style.display='flex'
+      console.log(form.action)
+       
+        }
+      async function  validator(){
+        const couponId=document.getElementById('coupon').value
+        console.log(couponId)
+     let res=  await fetch(`/couponValidate?id=${couponId}`,{method:'post'})
+     let data=await res.json()
+     console.log(data)
+     if (data.validated){
+     let totel=document.getElementById('totelprice').innerHTML
+     let old=parseFloat(totel.split('=')[1].trim())
+     let discount=parseFloat(old)* parseFloat(data.discount/100)
+     let changed
+     if (discount<parseFloat(data.maxAmount)){
+      changed=parseFloat(old)-discount}
+     else {
+      changed=parseFloat(old)-parseFloat(data.maxAmount)
+     }
+     document.getElementById('totelprice').innerHTML=`${totel}-${data.discount}=${changed}`
+     
+     document.getElementById('couponValidate').innerHTML='coupon aplied'
+     }
+      }
+     async  function placeOrder(event){
+      event.preventDefault()
+      let orderform=document.querySelector('#orderform')
+     let details= new FormData(orderform)
+     let adress=details.get("adress")
+     let paymentOption=details.get("paymentOption") 
+     let couponid=document.getElementById('coupon').value
+
+     const response= await fetch(`/placeOrder?adress=${adress}&paymentOption=${paymentOption}&couponid=${couponid}`,{method:'POST'})
+     const data=await response.json()
+     if(data.methode=='cod'){
+      console.log('hi')
+      try{
+        window.location.href='/orderConformation'
+      }
+      catch(err){
+        console.log(err)
+      }
+      
+     }
+      if(data.methode=='online'){
+        const order=data.order
+        console.log(data)
+        console.log(order);
+        makeOrder(order)
+      }
+      }
+
+      function makeOrder(order){
+       let amount=order.amount
+       amount=parseFloat(amount)
+       console.log(amount)
+       amount=amount*100
+        var options = {
+    "key": "rzp_test_8emA6zzli6nGP1", // Enter the Key ID generated from the Dashboard
+    "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Smart Shop",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+            
+        verifyPayment(response,order);
+    },
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+
+  rzp1.open();
+
+
+        
+      }
+
+     async function verifyPayment(response,order){
+      console.log(response)
+    const result=await fetch('/verifyOnline',{
+      method:'POST',
+      body:JSON.stringify({response,order}),
+      headers:{'content-Type':'application/json'}
+    })
+    const data = await result.json()
+    console.log(data)
+    if(data.paymet){
+      const res=await Swal.fire({
+                  icon: 'success',
+                  title: 'order placed',
+                  text: "your order placed please continue shoping"
+                })
+     window.location.href='/allproductpage'
+    }
+    else{
+      const res=await Swal.fire({
+                  icon: 'error',
+                  title: 'failed',
+                  text: "payment failed"
+                })
+    }
+      }
+      </script>
+  
+
+
+
+
+
+
+<%-include('../user/layout/user-footer-layout.ejs') -%>

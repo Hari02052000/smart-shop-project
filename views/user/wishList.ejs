@@ -1,0 +1,101 @@
+<%-include('../user/layout/user-header-layout.ejs') -%>
+<!--  -->
+<% if (wishList.length == 0) { %>
+  <div class>
+    <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+  </div>
+  <% } else { %>
+
+<section class="cart_area section_padding">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+                <th scope="col">product</th>
+                <th scope="col">price</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+          <% wishList.forEach(function(x) { %>
+            <tr id="productRow_<%=x.product._id%>">
+              <td>
+                <div class="media">
+                  <div class="d-flex">
+                    <img src="/images/products/<%= x.product.images[0] %>" alt="" />
+                  </div>
+                  <div class="media-body">
+                    <p><%=x.product.productName%></p>
+                  </div>
+                </div>
+              </td>
+              <td>
+              <h5 id="price_<%=x.product._id%>"><%=x.product.price%></h5>
+              </td>
+              <td>
+
+                <a href="/addTocart?id=<%=x.product._id%>" onclick="addcart(event,'<%=x.product._id%>')"><button class="btn btn-info">add to cart</button></a>
+                
+              </td>
+              <td>
+                <a href="/removeWishlist?id=<%=x.product._id%>" onclick="remove(event,'<%=x.product._id%>')"><button class="btn btn-danger">remove</button></a>
+              </td>
+            </tr>
+            <% }) %>  
+          </tbody>
+        </table>
+    </div>
+    <% } %>
+
+</section>
+
+<!--  -->
+<script>
+ async function addcart(event,id){
+  event.preventDefault();
+  let res=await fetch(`/addTocart?id=${id}`)
+  let data= await res.json()
+  if(data.ok){
+    const click=await Swal.fire({
+                     icon: 'success',
+                     title: 'added to cart',
+                     // text: "your order placed please continue shoping"
+                   })
+             console.log(click)
+             if(click.isConfirmed){
+              window.location.reload();
+             }
+
+  }
+
+ }
+</script>
+<script>
+  async function remove(event,id){
+    event.preventDefault();
+    const result=await Swal.fire({
+         title: 'Are you sure?',
+           text: `You want to remove the item from wishlist`,
+           icon: 'warning',
+           showCancelButton: true,
+           confirmButtonColor: '#3085d6',
+           cancelButtonColor: '#d33',
+           confirmButtonText: 'Yes, remove it!'})
+              
+           if(result.isConfirmed){
+             
+            let res=await fetch(`/removeWishlist?id=${id}`)
+            let data= await res.json()
+            if(data.wishListRemove){
+              window.location.reload();
+            }
+           }
+        
+ 
+  }
+</script>
+
+  <%-include('../user/layout/user-footer-layout.ejs') -%>

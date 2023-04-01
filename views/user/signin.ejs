@@ -1,0 +1,164 @@
+<html lang="en">
+    <head >
+        <title style="color: brown">LOGIN</title>
+        <meta name="author" content="Zaur">
+        <meta descryption content="Presentation of website">
+        <meta name="keywords" content="technology, cyber security, software">
+        <meta http-equiv="refresh" content="100">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/stylesheets/user/signinstyle/style.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+		<link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+		 <!--favicon-->
+		 <link rel="icon" href="https://api.hatchwise.com/api/public/storage/assets/contests/entries/L975725-20170505133348.jpg" type="image/x-icon">
+    </head>
+    <body>
+		<div class="container forms" id="container">
+				<div class="form sign-up">
+				<form action="/signUp" method="post" id="sighnUpForm">
+					<div class="header">Sign Up</div>
+					
+					  <span class="under__social">
+						 <a href="#" class="link signin-link">Already have an Account
+                        </a>
+					</span>
+					<div id="errdiv" style="color: red;"></div>
+					<div class="button-input-group">
+						<div class="group input-group">
+							<label>username:</label><br>
+							<input type="text"  name="username" required>
+						</div>
+						<div class="group input-group">
+							<label >password:</label><br>
+							<input type="text"  name="password" required>
+						</div>
+						<div class="group input-group">
+							<label >conform password:</label><br>
+							<input type="text"  name="confPassword" id="password" required>
+						</div>
+						<div style="color: red;" id="confPassword"></div>
+
+						<div class="group input-group">
+							
+							<label >email:</label><br>
+
+   							<input type="email"   name="email" id="emailbox" required>
+							
+						</div>
+						<div style="color: red;" id="emailerr"></div>
+						<div class="group input-group">
+							<label >phone:</label><br>
+							<input type="text"  name="phone" id="phonebox" required>
+							
+						</div>
+						<div style="color: red;" id="phoneerr"></div>
+						
+						<div class="group button-group">
+							<button type="submit"  class="signup-btn" style="margin-top: 5%;">
+								<span>Sign Up</span>
+							</button>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+			
+			
+			
+			<div class="form sign-in">
+				<form method="post" action="/login" id="login" onsubmit="login(event)">
+					<div class="header">Sign In</div>
+				
+					 <span class="under__social">
+						 <a href="#" class="link signup-link">Don't have an Account</a>
+					</span>
+					<div id="logerr" style="color: red;"></div>
+				<div class="button-input-group">
+					<div class="group input-group">
+						<input type="email" placeholder="Email" required name="email">
+					</div>
+					<div class="group input-group">
+						<input type="password" placeholder="Password"  name="password">
+					</div>
+					
+					<div class="form-link forgot">
+						<a href="/forgotPassword" class="login-link">Forgot your password?</a>
+					</div>
+					<div class="group button-group">
+						<button type="submit" class="signup-btn">
+							<span>Sign in</span>
+						</button>
+					</div>
+				</div>
+				</form>
+			</div>
+			
+			
+			
+		</div>
+		<script>
+		let sighnUpForm=document.getElementById('sighnUpForm')
+		sighnUpForm.addEventListener('submit',async function(e){
+			e.preventDefault()
+			document.getElementById('emailerr').innerHTML=''
+			document.getElementById('phoneerr').innerHTML=''
+			document.getElementById('confPassword').innerHTML=''
+			document.getElementById('emailbox').style.borderColor='lightgreen';
+			document.getElementById('phonebox').style.borderColor='lightgreen';
+			document.getElementById('password').style.borderColor='lightgreen';
+			let formdata=new FormData(sighnUpForm);
+		   let username=formdata.get('username')
+		   let password=formdata.get('password')
+		  let confPassword=formdata.get('confPassword')
+		  let email=formdata.get('email')
+		  let phone=formdata.get('phone')
+		  let res=await fetch(`/signUp?username=${username}&password=${password}&confPassword=${confPassword}&email=${email}&phone=${phone}`,{method:'POST'})
+		  let data=await res.json()
+		  console.log(data)
+		  if(data.userCreated){
+			window.location.href='/otp'
+		  }
+		  if(data.errors?.email){
+           console.log('email allredy exist')
+		   document.getElementById('emailbox').style.borderColor='red';
+		   document.getElementById('emailerr').innerHTML='email allredy exist'
+		  }
+		  if(data.errors?.phone){
+           console.log('phone number allredy exist')
+		   document.getElementById('phonebox').style.borderColor='red';
+		   document.getElementById('phoneerr').innerHTML='phone number allredy exist'
+		  }
+		  if(data.errors?.confPassword){
+		   document.getElementById('password').style.borderColor='red';
+		   document.getElementById('confPassword').innerHTML='passwords are not equal'
+		  }
+		})
+		</script>
+		<script>
+			let loginform=document.getElementById('login')
+			async function login(e){
+				e.preventDefault()
+				document.getElementById('logerr').innerHTML=''
+				let formdata=new FormData(loginform)
+			let email=	formdata.get('email')
+			let password=formdata.get('password')
+			console.log(email,password)
+			let res=await fetch(`/login?email=${email}&password=${password}`,{method:'POST'})
+			let data=await res.json()
+			console.log(data)
+			if(data.logedin){
+				window.location.href='/'
+			}
+			if(data.err){
+				document.getElementById('logerr').innerHTML=data.err
+			}
+			
+			
+   			}
+		</script>
+		
+		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="./javascripts/user/signinjs/sample.js"></script>
+    </body>
+</html>

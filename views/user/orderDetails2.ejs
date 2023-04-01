@@ -1,0 +1,122 @@
+<%-include('../user/layout/user-header-layout.ejs') -%>
+
+
+<div class="col-lg">
+    <div class="card">
+      
+    
+       
+
+        <% if (orderDetails.length == 0) { %>
+          <div class="col-12 text-center">
+            <img src="https://ibellstore.com/images/no-item-found-here.png" alt="no order" style="width: 400px; height:300px ;">
+          </div>
+          <% } else { %>
+        <div class="table-responsive" >
+          <table class="table table-hover" >
+            <thead>
+              <tr>
+                
+                <th scope="col">orderid</th>
+                <th scope="col">total amount</th>
+                <th scope="col">payment option</th>
+				<th scope="col">order status</th>
+                <th scope="col">orderd date</th>
+                <th scope="col">aplayed coupon</th>
+				<th scope="col">billing Adress</th>
+				<th scope="col">option1</th>
+                <th scope="col">option2</th>
+               
+              </tr>
+            </thead>
+            <tbody>
+              <%orderDetails.forEach(function(x){ %>
+                <tr>
+					<td><%=x._id%></td>
+					<td><%=x.totelAmount%></td>
+					<td><%=x.paymentOption%></td>
+					<td><%=x.orderStatus%></td>
+					<td><%=x.date.toLocaleDateString();%></td>
+					<td><%=x.coupon||'null'%></td>
+					<td><%=x.billingAdress%></td>
+					<td><a href="/viewOrderdProducts?q=<%=x._id%>"><button class="btn btn-secondary">view products</button></a></td>
+					<% if (x.orderStatus=='return' ) { %>
+						<td>request send to admin</td>
+						<% } else { %>
+					<% if (x.orderStatus=='deliverd' ) { %>
+						<td><a href="/returnOrder?q=<%=x._id%>" onclick="return confirm('are you want to return the order')"><button class="btn btn-info">return order</button></a></td>
+						
+						<% } else { %>
+					<td><a href="/cancelOrder?q=<%=x._id%>" onclick="return confirm('are you want to cancel the order')"><button class="btn btn-danger">cancel order</button></a></td>
+					<% } %>
+					<% } %>
+	
+				</tr>
+              
+                </tr>
+                <% }) %>
+              
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+	<title>Order Details</title>
+	
+</head>
+<body>
+	<div class="container">
+		
+		<table>
+			<tr>
+				<th>orderId</th>
+				<th>totel amount</th>
+				<th>paymentOption</th>
+				<th>order Status</th>
+				<th>orderd date</th>
+				<th>aplied coupon</th>
+				<th>biling adress</th>
+				<th>view</th>
+				<th>option</th>
+			</tr>
+			<% orderDetails.forEach(function(x) { %>
+			<tr>
+				<td><%=x._id%></td>
+				<td><%=x.totelAmount%></td>
+				<td><%=x.paymentOption%></td>
+				<td><%=x.orderStatus%></td>
+				<td><%=x.date.toLocaleDateString();%></td>
+				<td><%=x.coupon%></td>
+				<td><%=x.billingAdress%></td>
+				<td><a href="/viewOrderdProducts?q=<%=x._id%>"><button>view products</button></a></td>
+				<% if (x.orderStatus=='return' ) { %>
+					<td>request send to admin</td>
+					<% } else { %>
+				<% if (x.orderStatus=='deliverd' ) { %>
+					<td><a href="/returnOrder?q=<%=x._id%>" onclick="return confirm('are you want to return the order')"><button>return order</button></a></td>
+					
+					<% } else { %>
+				<td><a href="/cancelOrder?q=<%=x._id%>" onclick="return confirm('are you want to cancel the order')"><button>cancel order</button></a></td>
+				<% } %>
+				<% } %>
+
+			</tr>
+			<% }) %>
+		</table>
+		
+	</div>
+</body>
+</html> -->
+<%-include('../user/layout/user-footer-layout.ejs') -%>
+

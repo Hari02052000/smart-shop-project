@@ -1,0 +1,168 @@
+<%- include('../admin/layout/admin-header-layout.ejs') -%> 
+<style>
+ 
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+ 
+}
+
+ 
+
+@media (max-width:default) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+canvas{
+  background-color: #efeaea;
+}
+</style>
+
+
+
+<div class="container">
+  <div class="box">
+    <h5>productChart</h5>
+    <canvas id="doughnut" >
+
+    </canvas>
+  </div>
+  <div class="box">
+    <h5>user chart</h5>
+    <canvas id="bars" >
+
+    </canvas>
+  </div>
+  
+  <div class="box">
+    <h5>order chart</h5>
+    <canvas id="orderChart" >
+
+    </canvas>
+    <% if (revenue.length == 0) { %>
+      <h4>totel revanue=0</h4>
+      <% } else { %>
+    <h4>totel revanue=<%=revenue[0].totel%></h4>
+    <%}%>
+     </div>
+     <div class="box">
+      <h5></h5>
+      <!-- <canvas id="categoryChart" >
+      </canvas> -->
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  </script>
+
+
+<script>
+  var ctx = document.getElementById('doughnut').getContext('2d');
+  decodeURIComponent("<%= encodeURIComponent(labels) %>")
+  let labels = decodeURIComponent("<%= encodeURIComponent(labels) %>")
+  labels=JSON.parse(labels)
+    let data =decodeURIComponent("<%= encodeURIComponent(data) %>")
+    data=JSON.parse(data)
+    
+    let backgroundColors =decodeURIComponent("<%= encodeURIComponent(backgroundColors) %>");
+    backgroundColors=JSON.parse(backgroundColors)
+    console.log(labels,data,backgroundColors)
+   console.log( typeof(backgroundColors))
+    console.log(labels,data,backgroundColors)
+  var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels:labels,
+      datasets: [{
+        data:data ,
+        backgroundColor:backgroundColors,
+        borderColor: backgroundColors,
+          
+
+          
+          
+        
+        borderWidth: 1
+      
+      }],
+    },
+    
+   
+  })
+ 
+
+</script>
+
+ <script>
+  // Get the canvas element
+  var ctx = document.getElementById('bars').getContext('2d');
+  // Create the chart
+  var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['users'],
+      datasets: [{
+        label: 'totel users',
+        data: ['<%=totelUsers%>'],
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1
+      },{
+        label: 'blocked users',
+        data: ['<%=blockedUsers%>'],
+        backgroundColor: 'rgba(155, 40, 100, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+  
+</script>
+
+<script>
+  
+
+  var ctx = document.getElementById('orderChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['totel orders','canceld orders'],
+      datasets: [{
+        data: ['<%=totelOrders%>','<%=canceldOrders%>'],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 99, 132, 0.2)'
+                  ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 99, 132, 1)'
+          
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {}
+  });
+
+
+</script>
+
+
+<%- include('../admin/layout/admin-footer-layout.ejs') -%> 
+ <!-- totalUsers 
+    const totalProducts 
+    const totalOrders 
+    const revenue  -->
