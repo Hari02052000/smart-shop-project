@@ -54,19 +54,16 @@ module.exports={
       
        try {const{username,password,confPassword,email,phone}=req.query
         const user=await userModel.create({username,password,confPassword,email,phone});
-      console.log(user);
       const token=createToken(user._id);
       res.cookie('jwt',token,{maxage:maxage, httpOnly:true})
       //sending otp to mailid
       const otp=eoverify.sendOtp(email);
       otp1=otp.otp
-      console.log(otp1)
       res.json({userCreated:true})
     
       }
       catch(err){
         let errors= Helpers.handleErrors(err);
-        console.log(errors)
       res.json({errors})
       }
         
@@ -74,7 +71,6 @@ module.exports={
     otp:(req,res)=>{
       try{
       let user=req.user
-      console.log(user)
       res.render('user/otp',{user});}
       catch(err){
         res.send(err)
@@ -101,7 +97,6 @@ module.exports={
       let email=req.query.q
       const otp=eoverify.sendOtp(email);
       otp1=otp.otp
-      console.log(otp1)
       res.redirect('back')  
     },
    shop:async(req,res)=>{
@@ -151,7 +146,6 @@ module.exports={
     let id=req.params.id
     const product= await productModel.findOne({_id:id});
     const review=await reviewModel.find({product:id}).populate('user')
-     console.log(review)
     res.render('user/singleProduct',{user,product,review})}
     catch(err){
       res.send(err);
@@ -163,6 +157,7 @@ module.exports={
     res.render('user/profile',{user});
    },
    addToCart:async(req,res)=>{
+    try{
     let productid=req.query.q
     let user =req.user
     let userid=user._id
@@ -180,13 +175,16 @@ module.exports={
     }
     else{
       res.json({err:'you are not user'});
+    }}
+    catch(err){
+      res.json({err})
     }
 
    },
    incrimentQuantity:async (req,res)=>{
+    try{
     let product=req.query.product
     let action=req.query.action
-    console.log(action)
     let inc
     if (action=='add') inc=1
     if(action=='sub') inc=-1
@@ -196,25 +194,21 @@ module.exports={
    let updated=await userModel.updateOne({_id:userid,'cart.product':product},
   { $inc: { 'cart.$.quantity': inc } })
 
-  res.send('updated')
+  res.json({update:true})}
+  catch(err){
+    res.json({err})
+  }
 
   
   
   
    },
-   decrimentQuantity:async (req,res)=>{
-    let product=req.query.prodect
-    let user=req.user
-    let userid=user._id
-    await userModel.updateOne({_id:userid,'cart.product':product},
-  { $inc: { 'cart.$.quantity': -1 }})
-  res.redirect('back')
-   },
+   
    showCart:async(req,res)=>{
+    try{
     let id=req.params.id
     let user=req.user
    let usercart=await userModel.findOne({_id:id}).populate('cart.product')
-   console.log(usercart.cart)
     usercart.cart.forEach(element => {
       element.product.newprice=element.quantity*(element.product.price)
       
@@ -223,14 +217,22 @@ module.exports={
     
     const sum = usercart.cart.reduce((acc, item) => acc + item.product.newprice, 0);
     usercart.totel=sum
-    res.render('user/cart',{usercart,user})
+    res.render('user/cart',{usercart,user})}
+    catch(err){
+      res.send(err)
+    }
     
    },
    editpage:(req,res)=>{
+    try{
     let user=req.user
-    res.render('user/editprofile',{user},);
+    res.render('user/editprofile',{user},);}
+    catch(err){
+      res.send(err)
+    }
    },
    search:async(req,res)=>{
+    try{
 const limit=10
 let page=req.query.page
 page=parseInt(page)
@@ -259,18 +261,26 @@ const products=await productModel.find(searchquery).populate('category').sort({'
 let totelpage=await productModel.find(searchquery).populate('category').sort({'price':sortby}).count()
 totelpage=Math.ceil(totelpage/limit)
 
-res.send({products,totelpage})
+res.send({products,totelpage})}
+catch(err){
+  res.send(err)
+}
 
  
   
    },
    addAdress:async(req,res)=>{
+    try{
     let user=req.user
     const{name,house,city,zip}=req.body
    let users= await userModel.updateOne({_id:user._id},{$addToSet:{adress:{name,house,city,zip}}})
-   res.redirect('back')
+   res.redirect('back')}
+   catch(err){
+    res.send(err)
+   }
    },
    addwishlist:async(req,res)=>{
+    try{
    let productid=req.query.q
    let user=req.user
    if(user){
@@ -283,14 +293,21 @@ res.json({added:true});
   else res.json({isWishlist:true})
   
   
+  }}
+  catch(err){
+    res.json(err)
   }
    },
 
   showWishlist:async(req,res)=>{
+    try{
     let user=req.user
     let userWishlist=await userModel.findOne({_id:user._id}).populate('wishlist.product');
     let wishList=userWishlist.wishlist;
-    res.render('user/wishList',{wishList,user});
+    res.render('user/wishList',{wishList,user});}
+    catch(err){
+      res.send(err)
+    }
   },
 
   removeCart:async(req,res)=>{
@@ -305,12 +322,10 @@ res.json({added:true});
    }
   },
   showCheakout:async(req,res)=>{
-    
+    try{
     let user=req.user 
-
     let usercart=await userModel.findOne({_id:user._id}).populate('cart.product')
     if(usercart.cart.length!=0){
-    console.log(usercart);
     usercart.cart.forEach(element => {
       element.product.newprice=element.quantity*(element.product.price)
       
@@ -320,17 +335,19 @@ res.json({added:true});
     const sum = usercart.cart.reduce((acc, item) => acc + item.product.newprice, 0);
     usercart.totel=sum
 
-    console.log(usercart);
 
     res.render('user/cheakout',{usercart,user})}
     else{
       res.redirect('/allproductpage')
     }
-
+  }
+  catch(err){
+    res.send(err)
+  }
   },
   addCartfromWishlist:async(req,res)=>{
        
-
+   try{
     let productid=req.query.id
     let user =req.user
     let userid=user._id
@@ -352,7 +369,10 @@ res.json({added:true});
     else{
       res.send('you are not a user')
     }
-
+   }
+   catch(err){
+    res.send(err)
+   }
     
 
   },
@@ -360,35 +380,26 @@ res.json({added:true});
   removeWishlist:async(req,res)=>{
     let id= req.query.id
    let user=req.user
-   console.log(id)
    try{
     await userModel.updateOne({_id:user._id},{$pull:{wishlist:{product:id}}})
     res.json({wishListRemove:true})
    }
    catch(err){
-    console.log(err)
+    console.json({err})
    }
   },
 
   placeOrder:async(req,res)=>{
+    try{
     let newOrder
     let coupon=null
     let{adress,paymentOption,couponid,wallet}=req.query;
-    console.log(adress,paymentOption,couponid,wallet)
-    console.log(wallet)
-    console.log(typeof(wallet))
-    
     const userId=req.user._id
-    console.log(adress,paymentOption,couponid)
 let usercart=await Helpers.findCartTotel(userId)
-   console.log(usercart.totel)
    let deliveryAdress= usercart.adress.find(a=>a._id==adress)
    deliveryAdress=`name:${deliveryAdress.name},${deliveryAdress.house}(house),${deliveryAdress.city}(city),${deliveryAdress.zip}(zip)`
  
- console.log(deliveryAdress)
  const products=[...usercart.cart]
- console.log(couponStore.id)
- console.log(couponid)
  if(couponStore.id==couponid){
   let actualPrice=parseFloat(usercart.totel)
   let discountPercentage=parseFloat(couponStore.discount)
@@ -403,7 +414,6 @@ let usercart=await Helpers.findCartTotel(userId)
   if(discount>maxDiscount){
     usercart.totel=maxDiscount
   }
-  console.log(usercart.totel)
 coupon=couponid
 couponStore.id=undefined
 couponStore.discount=undefined
@@ -441,7 +451,6 @@ if(wallet=='useWallet'){
   
  if((paymentOption=='online')||(paymentOption=='cod')){
   newOrder=await orderModel.create({products,user:userId,totelAmount:usercart.totel,paymentOption,date:Date.now(),coupon, billingAdress:deliveryAdress,payedAmoundFromWallet:usercart.takedWallet})
-  console.log(newOrder)
            if(usercart.totel==0){
             await userModel.findOneAndUpdate({_id:userId},{$set:{cart:[]}})
             res.json({allFromWallet:true})
@@ -458,13 +467,13 @@ if(wallet=='useWallet'){
   if(paymentOption=='online'){
 
 
-    var options = {
+    let options = {
       amount: usercart.totel,  
       currency: "INR",
       receipt: ""+newOrder._id
     };
     instance.orders.create(options, function(err, order) {
-      if(err) console.log(err)
+      if(err) res.json({err})
       res.json({methode:'online',order:order})
     });
   }
@@ -472,24 +481,29 @@ if(wallet=='useWallet'){
 
 
           }
-         
+        }
+        catch(err){
+          res.json({err})
+        }     
   },
 
 viewOrders:async(req,res)=>{
+  try{
   let user=req.user
 let orderDetails=await orderModel.find({user:user._id}).populate('products.product').sort({date:-1})
 
-res.render('user/orderDetails',{orderDetails,user})
+res.render('user/orderDetails',{orderDetails,user})}
+catch(err){
+  res.send({err})
+}
 },
 couponValidate:async(req,res)=>{
   try{
   let couponid=req.query.id
-  console.log(couponid)
   let coupon=await couponModel.findOne({couponId:couponid})
   let user=req.user
   if(!coupon) res.json({err:'couponNotFound'})
   else{
-    console.log(coupon)
     const currentDate= Date.now()
     if(currentDate>coupon.expiryDate){
        res.json({err:'coupon expaired'})
@@ -513,10 +527,11 @@ couponStore.maxAmount=coupon.maxAmount
     
   }}
   catch(err){
-    console.log(err)
+    console.json({err})
   } 
 },
 verifyOnlinePayment:async(req,res)=>{
+  try{
   let user=req.user
   const{response,order}=req.body
   const crypto=require('crypto')
@@ -533,50 +548,65 @@ verifyOnlinePayment:async(req,res)=>{
   else{
     res.json({payment:'failed'})
   }
-  console.log(req.body);
+}
+catch(err){
+  res.json({err})
+}
 
 },
 showConformpage:(req,res)=>{
   res.render('user/orderConformation')
 },
 showOrderdProducts:async(req,res)=>{
+  try{
   let user=req.user
   let id=req.query.q
   let orderdProducts=await orderModel.findOne({_id:id}).populate('products.product')
-  console.log(orderdProducts)
   orderdProducts=orderdProducts.products
-  res.render('user/orderdProducts',{orderdProducts,user})
+  res.render('user/orderdProducts',{orderdProducts,user})}
+  catch(err){
+    res.send(err)
+  }
 },
 
 removeAdress:async(req,res)=>{
-  console.log('ok')
+  try{
   let user=req.user
   let adress=req.query.q
-  console.log(adress)
-  console.log(user._id)
   await userModel.updateOne({_id:user._id},{$pull:{adress:{_id:adress}}})
     res.redirect('back')
+  }
+  catch(err){
+    res.send(err)
+  }
 
 
 },
 showUpdate:async(req,res)=>{
+  try{
   let adressId=req.query.id
   let user=req.user
  let adress= user.adress.find(a=>a._id==adressId)
-  console.log(adress);
-  res.send(adress)
+  res.send(adress)}
+  catch(err){
+    res.send(err)
+  }
 },
 updateAdress:async(req,res)=>{
+  try{
   let user=req.user
   let adressid=req.query.id
   const {name,house,city,zip}=req.body
   let newuser=await userModel.updateOne({_id:user._id,'adress._id': adressid },
   { $set: { 'adress.$': {name,house,city,zip} } })
-  console.log(newuser)
 
-res.redirect('back')
+res.redirect('back')}
+catch(err){
+  res.send(err)
+}
 },
 cancelOrder:async(req,res)=>{
+  try{
   let orderid=req.query.q
   let order=await orderModel.findOneAndUpdate({_id:orderid},{$set:{orderStatus:'canceld'}})
   let userid=req.user._id
@@ -588,9 +618,14 @@ cancelOrder:async(req,res)=>{
   
 }
 res.send({canceld:true})
+  }
+  catch(err){
+    res.send(err)
+  }
 
 },
 addReview:async(req,res)=>{
+  try{
   let user=req.user
   let{productid,review,rating}=req.query
   rating=parseFloat(rating)
@@ -619,9 +654,12 @@ addReview:async(req,res)=>{
      res.json({err:'you can only provide review and rating after delivery'})
      return;
   }
+}
+catch(err){
+  res.json({err})
+}
 },
 updateDetails:async(req,res)=>{
- console.log(req.query)
  const{email,phone,username,id}=req.query
  try{
   await userModel.findOneAndUpdate({_id:id},{$set:{email,phone,username}})
@@ -631,51 +669,54 @@ updateDetails:async(req,res)=>{
   
     res.json({err:err.keyPattern})
     
-  
  }
 },
 showPasswordForm:(req,res)=>{
-  console.log('hi')
+try{
   let user=req.user
-  res.render('user/changePassword',{user})
+  res.render('user/changePassword',{user})}
+  catch(err){
+    res.send(err)
+  }
 },
 returnOrder:async(req,res)=>{
+  try{
   let orderid=req.query.q
-  console.log(orderid)
   let order=await orderModel.findOne({_id:orderid})
  const deliverdDate= order.deliverdDate
  let twoWeeksAfter =deliverdDate
  twoWeeksAfter. setDate(deliverdDate.getDate() + 7 * 2);
 const dateNow=  new Date();
-console.log(dateNow)
  if (dateNow < twoWeeksAfter) {
   await orderModel.updateOne({_id:orderid},{$set:{orderStatus:'return'}})
-  console.log('return ok')
   res.json({returned:true})
 
 } 
 else{
-  console.log('2 week over')
   res.json({err:'you canot return the product after 2 weeks'})
 }
 
-
+  }
+  catch(err){
+    res.json({err})
+  }
   
   
 },
 isEmail:async(req,res)=>{
+  try{
   let email=req.query.email
-  console.log(email)
   let user=await userModel.findOne({email:email})
-  console.log(user)
   if(user){
     const otp=eoverify.sendOtp(user.email);
     otp1=otp.otp
-    console.log(otp1)
     res.json({isEmail:true,user})}
   else{
     res.json({isEmail:false})
 
+  }}
+  catch(err){
+    res.json({err})
   }
 },
 changePasswordForm:(req,res)=>{
@@ -683,25 +724,32 @@ changePasswordForm:(req,res)=>{
 },
 showOtp:(req,res)=>{
   let email=req.query.email
-  
-      res.render('user/passwordChangeOtp',{email})
+  res.render('user/passwordChangeOtp',{email})
 },
 showChangePasswordForm:(req,res)=>{
   let email=req.email
   res.render('user/changePassword',{email})
 },
 changePassword:async(req,res)=>{
+  try{
  let email=req.query.email
  let password=req.query.password
 password= await bcrypt.hash(password,12);
  await userModel.findOneAndUpdate({email:email},{$set:{password:password}})
- res.json({updated:true})
+ res.json({updated:true})}
+ catch(err){
+  res.json({updated:false})
+ }
 },
 updateProfile:async(req,res)=>{
+  try{
   const user=req.user
   let profile=req.file.filename
   await userModel.findOneAndUpdate({_id:user._id},{$set:{profile}});
-  res.json({uploaded:true})
+  res.json({uploaded:true})}
+  catch{
+    res.json({uploaded:false})
+  }
 } 
     
 }

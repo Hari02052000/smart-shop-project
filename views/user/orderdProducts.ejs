@@ -23,7 +23,7 @@
           <% orderdProducts.forEach(function(x) { %>
             <tr>
               <td><%=x.product.productName%></td>
-              <td><img src="/images/products/<%=x.product.images[0]%> " alt="Product" style="height:70px"></td>
+              <td><img src="<%=x.product.images[0].URL%> " alt="Product" style="height:70px"></td>
                         <td><%=x.quantity%></td>
               <td><%=x.product.price%></td>
             </tr>

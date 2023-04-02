@@ -25,6 +25,7 @@ const createToken=(id)=>{
 
 module.exports={
     showhome:async(req,res)=>{
+        try{
      let totelUsers=await userModel.find().count()
      let blockedUsers=await userModel.find({isBlocked:true}).count()
      let totelOrders=await orderModel.find().count()
@@ -50,9 +51,13 @@ module.exports={
     labels=JSON.stringify(labels)
     data=JSON.stringify(data)
     backgroundColors=JSON.stringify(backgroundColors)
-    res.render('admin/home',{labels,data,backgroundColors,totelOrders,revenue,canceldOrders,totelUsers,blockedUsers})
+    res.render('admin/home',{labels,data,backgroundColors,totelOrders,revenue,canceldOrders,totelUsers,blockedUsers})}
+    catch(err){
+        res.send(err);
+    }
     },
     login:async (req,res)=>{
+        try{
         const{email,password}=req.query
         const admin=await adminModel.findOne({email:email});
         if(!admin) {
@@ -70,6 +75,9 @@ module.exports={
         }
         res.json({err:'invalid username or password'})
         return
+       }}
+       catch(err){
+        res.json({err:err})
        }
     
        },
@@ -79,18 +87,30 @@ module.exports={
        },
 
     products: async(req,res)=>{
+        try{
         const products= await productModel.find().populate( { path: 'category',
         select: 'category'}
       )
-        res.render('admin/viewproduct',{products})
+        res.render('admin/viewproduct',{products})}
+        catch(err){
+            res.send(err)
+        }
     },
     addProductPage:async (req,res)=>{
+        try{
         const category=await categoryModel.find({listed:true})
-        res.render('admin/addproduct',{category})
+        res.render('admin/addproduct',{category})}
+        catch(err){
+            res.send(err)
+        }
     },
     allCategory:async (req,res)=>{
+        try{
         const category=await categoryModel.find() 
-        res.render('admin/allCategory',{category});
+        res.render('admin/allCategory',{category});}
+        catch(err){
+            res.send(err);
+        }
     },
     showCategory:(req,res)=>{
         res.render('admin/addCategory');
@@ -115,59 +135,72 @@ module.exports={
 
     },
     addProducts:async(req,res)=>{
-        console.log(req.body);
+        try{
         let{productName,category,description,price,stocks,brand,model,highlights}=req.body
         
          highlights=highlights.split(',');
         let images=await cloudinary.multifiles(req.files)
         await productModel.create({productName,category,description,price,stocks,brand,model,images,highlights})
-        res.redirect('back');
+        res.redirect('back');}
+        catch(err){
+            res.send(err);
+        }
     },
     showuser:async(req,res)=>{
+        try{
      const users=await userModel.find();
-        res.render('admin/viewuser',{users});
+        res.render('admin/viewuser',{users});}
+        catch(err){
+            res.send(err)
+        }
     },
     blockUser:async (req,res)=>{
+        try{
      let id =req.query.id
-     console.log(id)
      await userModel.findByIdAndUpdate({ _id: id }, { $set: { isBlocked: true } })
-    res.redirect('/admin/alluser');
+    res.redirect('/admin/alluser');}
+    catch(err){
+        res.send(err);
+    }
 
     },
     unblockUser:async (req,res)=>{
+        try{
         let id =req.query.id
-        console.log(req.query.id)
         await userModel.findByIdAndUpdate({ _id: id }, { $set: { isBlocked: false } });
-        res.redirect('/admin/alluser');
+        res.redirect('/admin/alluser');}
+        catch(err){
+            res.send(err);
+        }
         
     },
-    listCategory:async (req,res)=>{
-        const id=req.params.id
-        await categoryModel.findByIdAndUpdate({ _id: id }, { $set: {listed: true } });
-       res.redirect('/admin/allcategory');
-
-    },
-    unlistCategory:async (req,res)=>{
-        const id=req.params.id
-        await categoryModel.findByIdAndUpdate({ _id: id }, { $set: {listed: false } });
-       res.redirect('/admin/allcategory');
-
-    },
+    
     editCategory:async(req,res)=>{
+        try{
      const id=req.params.id
      let category= await categoryModel.findOne({_id:id})
-     res.render('admin/editCategory',{category});
+     res.render('admin/editCategory',{category});}
+     catch(err){
+        res.send(err)
+     }
     },
     editproductpage:async(req,res)=>{
+        try{
         const id=req.params.id
-        console.log(id)
         let products=await productModel.findOne({_id:id})
         let category= await categoryModel.find();
-        res.render('admin/editProduct',{products,category})
+        res.render('admin/editProduct',{products,category})}
+        catch(err){
+            res.send(err);
+        }
     },
     showCoupons:async(req,res)=>{
+        try{
         const coupons=await couponModel.find()
-        res.render('admin/allCoupons',{coupons})
+        res.render('admin/allCoupons',{coupons})}
+        catch(err){
+            res.send(err);
+        }
     },
     showCouponPage:async(req,res)=>{
         try{
@@ -204,34 +237,44 @@ module.exports={
        res.json({changed:true});
     }
        catch(err){
-        console.log(err)
         res.json({err:'name allredy exist'})
        }
     },
     unlistProdect:async(req,res)=>{
+        try{
         let id=req.params.id
         await productModel.findByIdAndUpdate({ _id: id }, { $set: { listed: false } })
-        res.redirect('back')
+        res.redirect('back')}
+        catch(err){
+            res.send(err);
+        }
 
     },
     listProdect:async(req,res)=>{
+        try{
         let id=req.params.id
         await productModel.findByIdAndUpdate({ _id: id }, { $set: { listed: true } })
-        res.redirect('back')
+        res.redirect('back')}
+        catch(err){
+            res.send(err);
+        }
 
     },
     deleteImage:async(req,res)=>{
+        try{
         let{productId,image}=req.query
        const product= await productModel.findOne({_id:productId})
       let removed= product.images.splice(image,1)
-      console.log(removed[0].cloudinary_id)
       let result=await cloudinary.deleteImage(removed[0].cloudinary_id)
-      console.log(result)
        await product.save()
     
-      res.json({imageRemoved:true})
+      res.json({imageRemoved:true})}
+      catch(err){
+        res.json({err});
+      }
     },
     updateProduct:async(req,res)=>{
+        try{
         let productId=req.query.id
         let updated=req.body
        let newProduct= await productModel.findOneAndUpdate({_id:productId},{$set:updated})
@@ -241,47 +284,65 @@ module.exports={
            await newProduct.save()
           
            }
-         res.redirect('/admin/allproduct')
+         res.redirect('/admin/allproduct')}
+         catch(err){
+            res.send(err);
+         }
     },
     showEditCoupon:async(req,res)=>{
+        try{
         let couponid=req.params.id
         let coupon= await couponModel.findOne({_id:couponid})
-        res.render('admin/editCoupon',{coupon})
+        res.render('admin/editCoupon',{coupon})}
+        catch(err){
+            res.send(err);
+        }
     },
     deactiveCoupon:async(req,res)=>{
+        try{
         let couponid=req.query.id
         await couponModel.findOneAndUpdate({_id:couponid},{$set:{status:false}})
-        res.redirect('back')
+        res.redirect('back')}
+        catch(err){
+            res.send(err);
+        }
 
     },
     activeCoupon:async(req,res)=>{
+        try{
         let couponid=req.query.id
         await couponModel.findOneAndUpdate({_id:couponid},{$set:{status:true}})
-        res.redirect('back')
+        res.redirect('back')}
+        catch(err){
+            res.send(err);
+        }
 
     },
     viewOrders:async(req,res)=>{
+        try{
         const allOrders=await orderModel.find().populate('products.product').sort({date:-1});
        
-        res.render('admin/allOrders',{allOrders})
+        res.render('admin/allOrders',{allOrders})}
+        catch(err){
+            res.send(err)
+        }
         
     },
     showSales:(req,res)=>{
+
         res.render('admin/salesReport');
         
     },
     getSales:async(req,res)=>{
+        try{
     
         let{fromDate,toDate,file}=req.body
-
-        console.log(fromDate,toDate,file)
         fromDate=new Date(fromDate).setHours(00,00,00)
         toDate=new Date(toDate).setHours(23,59,59)
         let orders=await orderModel.find({date: {
             $gte: fromDate,
             $lte: toDate,
           }}).populate('products.product');
-          console.log(orders)
        if(file=='excel'){
         const workbook = new Excel.Workbook();
         const worksheet = workbook.addWorksheet('SalesReport');
@@ -325,18 +386,26 @@ orders.forEach(order => {
 
        }
 
-    
+        }
+        catch(err){
+            res.send(err);
+        }
     
        
         
     },
     manageOrder:async(req,res)=>{
+        try{
         let orderid=req.query.id
         let order=await orderModel.findOne({_id:orderid}).populate('products.product');
         res.render('admin/manageOrder',{order})
-        
+        }
+        catch(err){
+            res.send(err);
+        }
     },
     updateOrder:async(req,res)=>{
+        try{
         let orderid=req.query.q
         const{orderStatus,paymentStatus}=req.body
         if(orderStatus=='canceld'){
@@ -344,15 +413,18 @@ orders.forEach(order => {
         }
         if(orderStatus=='deliverd'){
            let date=Date.now()
-           console.log(date)
             await orderModel.findOneAndUpdate({_id:orderid},{$set:{orderStatus,paymentStatus,deliverdDate:date}})
             res.redirect('/admin/orders')
            }
          else{
         await orderModel.findOneAndUpdate({_id:orderid},{$set:{orderStatus,paymentStatus}})
-        res.redirect('/admin/orders')}
+        res.redirect('/admin/orders')}}
+         catch(err){
+            res.send(err);
+         }
     },
     cancelOrder:async(req,res)=>{
+        try{
         let orderid=req.query.id
         //set orderstatus is cancel
       let order= await orderModel.findOneAndUpdate({_id:orderid},{$set:{orderStatus:'canceld'}})
@@ -367,52 +439,74 @@ orders.forEach(order => {
             
           }
         
-        res.redirect('back')
+        res.redirect('back')}
+         catch(err){
+            res.send(err);
+         }
     
     },
     showBanner:async(req,res)=>{
+        try{
    let  banners=await bannerModel.find()
-     res.render('admin/allBanners',{banners});
+     res.render('admin/allBanners',{banners});}
+     catch(err){
+        res.send(err);
+     }
+
     },
     addBannerForm:(req,res)=>{
         res.render('admin/addBanner');
     },
     createBanner:async(req,res)=>{
+        try{
         const description= req.body.description
         const image=req.file.filename
-        console.log(image)
-         console.log(req.file);
          await bannerModel.create({image,description});
-         res.redirect('/admin/banner')
+         res.redirect('/admin/banner')}
+         catch(err){
+            res.send(err)
+         }
     },
     updateCoupon:async(req,res)=>{
         try{
         let id=req.query.id
-        console.log(req.body)
         let{couponId,expiryDate,userAllowed,discount,minimumPurchase,maxAmount}=req.query
         await couponModel.findOneAndUpdate({_id:id},{$set:{couponId,expiryDate,userAllowed,discount,minimumPurchase,maxAmount}})
         res.json({updated:true})}
-        //res.redirect('/admin/coupons')}
         catch(err){
             res.json({updated:false})
         }
     },
     unlistbanner:async(req,res)=>{
+        try{
         let id =req.params.id
         await bannerModel.findOneAndUpdate({_id:id},{$set:{listed:false}})
-        res.redirect('back')
+        res.redirect('back')}
+        catch(err){
+            res.send(err)
+        }
     },
     listbanner:async(req,res)=>{
+        try{
         let id =req.params.id
         await bannerModel.findOneAndUpdate({_id:id},{$set:{listed:true}})
-        res.redirect('back')
+        res.redirect('back')}
+        catch(err)
+        {
+            res.send(err)
+        }
     },
     showBannerEdit:async(req,res)=>{
+        try{
         let id=req.params.id
        let banner= await bannerModel.findOne({_id:id})
-       res.render('admin/editBanner',{banner})
+       res.render('admin/editBanner',{banner})}
+       catch(err){
+        res.send(err);
+       }
     },
     updateBanner:async(req,res)=>{
+        try{
         let id=req.query.id
         let updated={description}=req.body
         let image=req.file
@@ -423,7 +517,10 @@ orders.forEach(order => {
     
     
        await bannerModel.findByIdAndUpdate({_id:id},{$set:updated})
-       res.redirect('/admin/banner')
+       res.redirect('/admin/banner')}
+       catch(err){
+        res.send(err)
+       }
     }
     
     

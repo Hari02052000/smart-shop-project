@@ -1,7 +1,7 @@
 const express=require('express');
 const controller=require('../controllers/adminController');
 const router=express.Router();
-const helper=require('../Helpers/adminhelpers');
+const helper=require('../Helpers/adminHelpers');
 const auth=require('../controllers/adminAuth');
 
 
@@ -29,8 +29,6 @@ router.post('/addCatogery',auth.isAdmin,helper.uploadCategory,controller.addCate
 router.post('/addproduct',auth.isAdmin,helper.uploadProducts,controller.addProducts);
 router.post('/blockUser',auth.isAdmin,controller.blockUser);
 router.post('/unblockUser',auth.isAdmin,controller.unblockUser);
-router.post('/unlistCategory/:id',auth.isAdmin,controller.unlistCategory);
-router.post('/listCategory/:id',auth.isAdmin,controller.listCategory);
 router.post('/editCategory/:id',auth.isAdmin,controller.editCategory);
 router.post('/addCoupon',auth.isAdmin,controller.addCoupon);
 router.post('/updateCategory',auth.isAdmin,helper.uploadCategory,controller.updateCatogery);

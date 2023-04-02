@@ -51,7 +51,7 @@
                   <%order.products.forEach(function(x){ %>
                     <tr>
               <td><%=x.product.productName%></td>
-              <td><img src="/images/products/<%=x.product.images[0]%> " alt="Product" style="height:70px"></td>
+              <td><img src="<%=x.product.images[0].URL%> " alt="Product" style="height:70px"></td>
                         <td><%=x.quantity%></td>
               <td><%=x.product.price%></td>
               
@@ -66,7 +66,8 @@
            <b> payment option:</b> <%=order.paymentOption%> <br>
             <b> order status:</b> <%=order.orderStatus%> <br>
             <b> payment status:</b> <%=order.paymentStatus%> <br>
-              <b>aplied coupon:</b> <%=order.coupon||'null'%>
+              <b>applied coupon:</b> <%=order.coupon||'null'%><br>
+              <b>address</b><br> <%=order.billingAdress%>
             </div>
           </div>
         
