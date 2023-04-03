@@ -170,12 +170,10 @@
     findall();
     async function findall(){
     const url=`/search?q=${query}&category=${category}&sort=${sort}&page=${page}`
-    console.log('start')
     document.getElementById('allProduct').innerHTML=""
     document.getElementById('pageNumber').innerHTML=""
     const res= await fetch(url)
     const data=await res.json()
-    console.log(data)
     let single
     if(data.products.length==0){
     single=`
@@ -186,7 +184,6 @@
                     </div>
     `
     document.getElementById('allProduct').insertAdjacentHTML('beforeend', single);
-           console.log('end')
     }
     else{
         data.products.forEach(product => {
@@ -215,15 +212,7 @@
                 </div>
             </div>`            
                                                                 
-        single2=`<div class="col-lg-4 col-sm-6 ">
-                                        <div class="single_product_item">
-                                            <img src="/images/products/${product.images[0]}" alt="#" class="img-fluid">
-                                            <h3> <a href="/singleProduct/${product._id}"> ${product.productName}
-                                            </a> </h3>
-                                            <p>RS: ${product.price}</p>
-                                        </div>
-                                    </div>`
-    
+       
     
     
                     
@@ -233,14 +222,10 @@
                   
             
            document.getElementById('allProduct').insertAdjacentHTML('beforeend', single);
-           console.log('end')
         });
-        console.log(document.getElementById('pageNumber'))
-        //document.getElementById('page').insertAdjacentHTML('beforeend','<p>hi</p>')
     }
     if(data.products.length!=0){
     let pages=parseInt(data.totelpage)
-     console.log(pages)
      for(let i=1;i<=pages;i++){
         
         let divElement=	document.getElementById('pageNumber')
@@ -288,17 +273,20 @@ radioButtons.forEach((radioButton) => {
 });
 
     //change event of search
-    searchInput.addEventListener("input", function(){
-      query=  searchInput.value||undefined
-      findall();
-    });
+    let timer;
+     searchInput.addEventListener("input", function(){
+    clearTimeout(timer);
+    timer=setTimeout(function(){
+        query=  searchInput.value||undefined
+       findall();
+    },500)
+     });
 
 
     async function changePage(newurl){
         document.getElementById('allProduct').innerHTML=""
         const res= await fetch(newurl)
     const data=await res.json()
-    console.log(data)
     let single
     if(data.products.length==0){
     single=`
@@ -309,7 +297,6 @@ radioButtons.forEach((radioButton) => {
                     </div>
     `
     document.getElementById('allprodect').insertAdjacentHTML('beforeend', single);
-           console.log('end')
     }
     else{
         data.products.forEach(product => {
@@ -337,17 +324,8 @@ radioButtons.forEach((radioButton) => {
                     </div>
                 </div>
             </div>`
-            single2=`<div class="col-lg-4 col-sm-6 ">
-                                        <div class="single_product_item">
-                                            <img src="/images/products/${product.images[0]}" alt="#" class="img-fluid">
-                                            <h3> <a href="/singleProduct/${product._id}"> ${product.productName}
-                                            </a> </h3>
-                                            <p>RS: ${product.price}</p>
-                                        </div>
-                                    </div>`    
             
            document.getElementById('allProduct').insertAdjacentHTML('beforeend', single);
-           console.log('end')
         });
     
     

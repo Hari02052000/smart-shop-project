@@ -57,16 +57,16 @@ upload.array('images',10)(req,res,(err)=>{
 
 },
 uploadBanner:(req,res,next)=>{
-    const multerstorage=multer.diskStorage({
-        destination:(req,file,cb)=>{
-        cb(null,'public/images/banner')
-     },
-    filename:(req,file,cb)=>{
-    const ext=file.mimetype.split('/')[1]
-    const img ='banner'+Date.now()+'.'+ext
-    cb(null,img);
+    // const multerstorage=multer.diskStorage({
+    //     destination:(req,file,cb)=>{
+    //     cb(null,'public/images/banner')
+    //  },
+    // filename:(req,file,cb)=>{
+    // const ext=file.mimetype.split('/')[1]
+    // const img ='banner'+Date.now()+'.'+ext
+    // cb(null,img);
     
-    }})
+    // }})
     const multerfilter=(req,file,cb)=>{
         
         if(file.mimetype.startsWith('image')){
@@ -76,7 +76,7 @@ uploadBanner:(req,res,next)=>{
     }
     
     const upload=multer({
-    storage:multerstorage,
+    storage:multer.diskStorage({}),
     fileFilter:multerfilter
     })
     ///

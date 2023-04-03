@@ -40,7 +40,11 @@ const userSchema=mongoose.Schema({
     },
     profile:{
         type:String,
-        default:'default.png'
+        default:'https://res.cloudinary.com/dgblwidrj/image/upload/v1680497542/x287ovgg5zwwehppravw.png'
+    },
+    profileId:{
+        type:String,
+        default:'x287ovgg5zwwehppravw'
     },
     adress:[
         {name:{

@@ -245,8 +245,7 @@ const sort=req.query.sort
 const searchquery={listed:true}
 if(search!='undefined'){
   searchquery.$or=[{
-    productName:{$regex:search,$options:"i"}},
-   {brand:{$regex:search,$options:"i"}}]
+    productName:{$regex:search,$options:"i"}}]
 }
 
 if((category!='undefined')&&(category!='All')){
@@ -744,8 +743,12 @@ password= await bcrypt.hash(password,12);
 updateProfile:async(req,res)=>{
   try{
   const user=req.user
-  let profile=req.file.filename
-  await userModel.findOneAndUpdate({_id:user._id},{$set:{profile}});
+  let result=await cloudinary.uploadImage(req.file.path)
+        let url=result.secure_url
+        let cloudinaryid=result.public_id
+  let profile=url
+  let profileId=cloudinaryid
+  await userModel.findOneAndUpdate({_id:user._id},{$set:{profile,profileId}});
   res.json({uploaded:true})}
   catch{
     res.json({uploaded:false})

@@ -17,17 +17,17 @@ module.exports={
     return usercart
     },
   profileUpload:(req,res,next)=>{
-    const multerstorage=multer.diskStorage({
-      destination:(req,file,cb)=>{
-      cb(null,'public/images/userprofile')
-   },
-  filename:(req,file,cb)=>{
-  const ext=file.mimetype.split('/')[1]
-  const name=req.user.email
-  const img =name+'.'+ext
-  cb(null,img);
+  //   const multerstorage=multer.diskStorage({
+  //     destination:(req,file,cb)=>{
+  //     cb(null,'public/images/userprofile')
+  //  },
+  // filename:(req,file,cb)=>{
+  // const ext=file.mimetype.split('/')[1]
+  // const name=req.user.email
+  // const img =name+'.'+ext
+  // cb(null,img);
   
-  }})
+  // }})
   const multerfilter=(req,file,cb)=>{
       
       if(file.mimetype.startsWith('image')){
@@ -37,7 +37,7 @@ module.exports={
   }
   
   const upload=multer({
-  storage:multerstorage,
+  storage:multer.diskStorage({}),
   fileFilter:multerfilter
   })
   ///

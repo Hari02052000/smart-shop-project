@@ -460,8 +460,10 @@ orders.forEach(order => {
     createBanner:async(req,res)=>{
         try{
         const description= req.body.description
-        const image=req.file.filename
-         await bannerModel.create({image,description});
+        let result=await cloudinary.uploadImage(req.file.path)
+        let image=result.secure_url
+        let cloudinaryid=result.public_id
+         await bannerModel.create({image,description,id:cloudinaryid});
          res.redirect('/admin/banner')}
          catch(err){
             res.send(err)
@@ -510,12 +512,13 @@ orders.forEach(order => {
         let id=req.query.id
         let updated={description}=req.body
         let image=req.file
-        if(image){
-            image=image.file.filename
-            updated.image=image
+        let banner=bannerModel.findOne({_id:id})
+        if(req.file){
+            let path=req.file.path
+          let imgid=banner.id
+         let data=  await cloudinary.rename(path,imgid)
+            updated.image=data.url
         }
-    
-    
        await bannerModel.findByIdAndUpdate({_id:id},{$set:updated})
        res.redirect('/admin/banner')}
        catch(err){

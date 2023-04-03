@@ -8,7 +8,7 @@
         <form action="/admin/editBanner?id=<%=banner._id%>" method="post" enctype="multipart/form-data">
           <div class="form-group">
             <label for="input-4">image</label>
-            <img src="/images/banner/<%=banner.image%>" style=" width: 100px; margin-bottom: 2vh;">
+            <img src="<%=banner.image%>" style=" width: 100px; margin-bottom: 2vh;">
 
             <input class="form-control" id="input-4" type="file"   name="image" accept="image/*">
           </div>

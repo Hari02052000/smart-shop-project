@@ -7,8 +7,12 @@ cloudinary.config({
 });
 module.exports={
  uploadImage:async(file)=>{
+  try{
   let data=await cloudinary.uploader.upload(file);
-  return data;
+  return data;}
+  catch(err){
+    console.log(err)
+  }
  },
 
  
