@@ -337,7 +337,7 @@ module.exports={
         try{
     
         let{fromDate,toDate,file}=req.body
-        fromDate=new Date(fromDate).setHours(00,00,00)
+        fromDate=new Date(fromDate).setHours(0,0,0)
         toDate=new Date(toDate).setHours(23,59,59)
         let orders=await orderModel.find({date: {
             $gte: fromDate,

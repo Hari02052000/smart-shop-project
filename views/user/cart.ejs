@@ -130,10 +130,20 @@
      try{
      //cheack value and action
      if(document.getElementById(`quantity_${id}`).value>1&&action=='sub'){
-       const res= await fetch(`/cartInc?product=${id}&action=${action}`)
-       console.log(res.data)
-       document.getElementById(`quantity_${id}`).value=parseInt(document.getElementById(`quantity_${id}`).value)-1
-     change()}
+       let res= await fetch(`/cartInc?product=${id}&action=${action}`)
+       res = await res.json()
+
+      if(!res.err){
+         
+        document.getElementById(`quantity_${id}`).value=parseInt(document.getElementById(`quantity_${id}`).value)-1
+
+        change()
+
+
+
+      }
+      
+}
        //remove item from cart after try to decrease one
        else if(document.getElementById(`quantity_${id}`).value<=1&&action=='sub'){
          const res=await Swal.fire({
@@ -141,7 +151,7 @@
                    title: 'no',
                    text: "quantity must keep 1"
                  })
-               console.log(res);
+           //    console.log(res);
         
        }
        //cheak value and action
@@ -154,9 +164,18 @@
       }
  
       else if(document.getElementById(`quantity_${id}`).value<10&&action=='add'){
-       const res= await fetch(`/cartInc?product=${id}&action=${action}`)
-       document.getElementById(`quantity_${id}`).value=parseInt(document.getElementById(`quantity_${id}`).value)+1
-       change()
+       let res= await fetch(`/cartInc?product=${id}&action=${action}`)
+        res = await res.json()
+        if(!res.err){
+          
+          document.getElementById(`quantity_${id}`).value=parseInt(document.getElementById(`quantity_${id}`).value)+1
+         change()
+
+
+
+        }
+
+       
       }
        function change(){
          //

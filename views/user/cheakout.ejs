@@ -279,7 +279,7 @@
      const data=await response.json()
      if(data.methode=='cod'){
     
-      console.log('hi')
+      
       try{
         const clicked=await Swal.fire({
           icon: 'success',
@@ -307,8 +307,6 @@
      }
       if(data.methode=='online'){
         const order=data.order
-        console.log(data)
-        console.log(order);
         makeOrder(order)
       }}
       else{
@@ -317,13 +315,12 @@
      }
      //razorpay 
      function makeOrder(order){
+      console.log(order)
        let amount=order.amount
        amount=parseFloat(amount)
-       console.log(amount)
-       amount=amount
         var options = {
     "key": "rzp_test_8emA6zzli6nGP1", // Enter the Key ID generated from the Dashboard
-    "amount": amount*1000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
     "currency": "INR",
     "name": "Smart Shop",
     "description": "Test Transaction",
