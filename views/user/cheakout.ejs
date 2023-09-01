@@ -221,7 +221,6 @@
      let data=await res.json()
      console.log(data)
      if(data.err){
-      console.log('hi')
       document.getElementById('couponErr').innerHTML=data.err
      }
      if (data.validated){
@@ -277,6 +276,18 @@
      if((adress!=null)&&(paymentOption!=null)){
      const response= await fetch(`/placeOrder?adress=${adress}&paymentOption=${paymentOption}&couponid=${couponid},&wallet=${wallet}`,{method:'POST'})
      const data=await response.json()
+
+     if(data.err == 'limit exceed'){
+
+      const res=await Swal.fire({
+                  icon: 'error',
+                  title: 'failed',
+                  text: "canot pay this much amount online chose another option"
+                })
+
+
+
+     }
      if(data.methode=='cod'){
     
       

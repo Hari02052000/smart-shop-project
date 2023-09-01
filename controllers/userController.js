@@ -418,7 +418,7 @@ module.exports = {
       res.json({ wishListRemove: true })
     }
     catch (err) {
-      console.json({ err })
+      res.json({ err })
     }
   },
 
@@ -495,7 +495,7 @@ module.exports = {
 
             await userModel.findOneAndUpdate({ _id: userId }, { $set: { cart: [] } })
 
-            res.json({ methode: 'cod' })
+           return res.json({ methode: 'cod' })
           }
           if (paymentOption == 'online') {
 
@@ -506,8 +506,11 @@ module.exports = {
               receipt: "" + newOrder._id
             };
             instance.orders.create(options, function (err, order) {
-              if (err) res.json({ err })
-              res.json({ methode: 'online', order: order })
+              if (err) {
+                return res.json({ err:'limit exceed' })
+
+              }
+            return  res.json({ methode: 'online', order: order })
             });
           }
         }
@@ -516,7 +519,7 @@ module.exports = {
       }
     }
     catch (err) {
-      res.json({ err })
+    return  res.json({ err })
     }
   },
 
@@ -565,7 +568,7 @@ module.exports = {
       }
     }
     catch (err) {
-      console.json({ err })
+      res.json({ err })
     }
   },
   verifyOnlinePayment: async (req, res) => {
