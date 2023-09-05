@@ -133,7 +133,7 @@
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
        if(res.ok){
         alert('response is ok')
-        console.log(await res.text())
+        alert(await res.text())
        }
        else{
         console.error('Network error:', res.status, res.statusText);
