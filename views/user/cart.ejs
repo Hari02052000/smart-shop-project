@@ -131,14 +131,6 @@
      //cheack value and action
      if(document.getElementById(`quantity_${id}`).value>1&&action=='sub'){
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
-       if(res.ok){
-        alert('response is ok')
-        alert(await res.text())
-       }
-       else{
-        console.error('Network error:', res.status, res.statusText);
-
-       }
        res = await res.json()
 
       if(!res.err){
