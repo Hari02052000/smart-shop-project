@@ -131,12 +131,9 @@
      //cheack value and action
      if(document.getElementById(`quantity_${id}`).value>1&&action=='sub'){
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
-      console.log(await res.text())
         res = await res.json()
-    
-       
 
-      if(!res.err){
+      if(res.status === "success"){
          
         document.getElementById(`quantity_${id}`).value=parseInt(document.getElementById(`quantity_${id}`).value)-1
 
@@ -169,7 +166,7 @@
       else if(document.getElementById(`quantity_${id}`).value<10&&action=='add'){
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
         res = await res.json()
-        if(!res.err){
+        if(res.status === "success"){
           
           document.getElementById(`quantity_${id}`).value=parseInt(document.getElementById(`quantity_${id}`).value)+1
          change()

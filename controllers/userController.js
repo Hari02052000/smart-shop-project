@@ -218,7 +218,9 @@ module.exports = {
       let updated = await userModel.updateOne({ _id: userid, 'cart.product': product },
         { $inc: { 'cart.$.quantity': inc } })
         res.setHeader('Content-Type', 'application/json');
-      res.json({ update: true })
+      res.json({   "status": "success",
+                 "message": "Updated successfully"
+          })
     }
     catch (err) {
       res.json({ err })
