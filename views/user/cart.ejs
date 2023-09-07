@@ -133,9 +133,10 @@
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
       try{
         res = await res.json()
-
+        alert('no error')
       }
       catch(err){
+        alert('error to convert json')
         console.log(err)
       }
        
