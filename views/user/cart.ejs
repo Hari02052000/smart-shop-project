@@ -131,14 +131,9 @@
      //cheack value and action
      if(document.getElementById(`quantity_${id}`).value>1&&action=='sub'){
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
-      try{
+      console.log(res)
         res = await res.json()
-        alert('no error')
-      }
-      catch(err){
-        alert('error to convert json')
-        console.log(err)
-      }
+    
        
 
       if(!res.err){
