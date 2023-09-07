@@ -219,13 +219,13 @@ module.exports = {
         { $inc: { 'cart.$.quantity': inc } })
 
         res.setHeader('Content-Type', 'application/json');
-       res.json({   "status": "success",
+
+        res.json({   "status": "success",
                  "message": "Updated successfully"
           })
     }
     catch (err) {
-      console.log(err)
-    //  res.json({ err })
+      res.json({ err })
     }
 
 
