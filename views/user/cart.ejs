@@ -40,9 +40,9 @@
                 <td>
                   <div class="product_count">
                     
-                    <span class="input-number-decrement" onclick="changeCount('<%=x.product._id%>','sub')"> <i class="ti-minus" ></i></span>
+                    <button class="input-number-decrement" style="border: none;" onclick="changeCount('<%=x.product._id%>','sub')"> <i class="ti-minus" ></i></button>
                     <input class="input-number" min="0" max="10" type="number" value="<%=x.quantity%>" id="quantity_<%=x.product._id%>" disabled>
-                    <span class="input-number-increment" onclick="changeCount('<%=x.product._id%>','add')"> <i class="ti-plus" ></i></span>
+                    <button class="input-number-increment" style="border: none;"  onclick="changeCount('<%=x.product._id%>','add')"> <i class="ti-plus" ></i></button>
                   </div>
                 </td>
                 <td>
@@ -131,8 +131,6 @@
      //cheack value and action
      if(document.getElementById(`quantity_${id}`).value>1&&action=='sub'){
        let res= await fetch(`/cartInc?product=${id}&action=${action}`)
-       console.log(res)
-       console.log(await res.text())
         res = await res.json()
             
       if(res.status === "success"){
